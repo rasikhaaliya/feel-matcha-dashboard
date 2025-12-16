@@ -7,7 +7,7 @@ import {
   LayoutDashboard, TrendingUp, Trash2, Utensils, Users, Settings, 
   AlertTriangle, ArrowUpRight, ArrowDownRight, Calendar, Filter, 
   Download, Search, Info, ChefHat, DollarSign, Truck, PieChart,
-  UserCheck, ClipboardX, Clock, QrCode, Cpu, Lightbulb, Coffee, Croissant, Target, Package, Scale, Building
+  UserCheck, ClipboardX, Clock, QrCode, Cpu, Lightbulb, Coffee, Croissant, Target, Package, Scale, Building, Menu, X
 } from 'lucide-react';
 
 // --- MOCK DATA GENERATION ---
@@ -172,6 +172,7 @@ const Badge = ({ status, text }) => {
 const FeelMatchaDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedOutlet, setSelectedOutlet] = useState('All Network');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // New state for mobile sidebar
   
   // Date State
   const today = new Date();
@@ -1000,28 +1001,47 @@ const FeelMatchaDashboard = () => {
   // --- SCAFFOLDING ---
 
   return (
-    <div className="flex h-screen bg-slate-50 font-sans text-slate-900">
+    <div className="flex h-screen bg-slate-50 font-sans text-slate-900 overflow-hidden">
+      {/* Mobile Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div 
+            className="fixed inset-0 bg-black/50 z-30 md:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="w-64 bg-slate-900 text-white flex flex-col fixed h-full z-10 hidden md:flex">
-        <div className="p-6 border-b border-slate-800">
+      <aside className={`
+        fixed inset-y-0 left-0 z-40 w-64 bg-slate-900 text-white flex flex-col transition-transform duration-300 ease-in-out
+        md:translate-x-0 md:static md:h-screen
+        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}>
+        <div className="p-6 border-b border-slate-800 flex justify-between items-center">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center">
                 <span className="font-bold text-white">FM</span>
             </div>
             <div>
                 <h1 className="font-bold text-lg leading-none">Feel Matcha</h1>
-                <span className="text-xs text-slate-300">Intelligence System</span>
+                <span className="text-xs text-slate-400">Intelligence System</span>
             </div>
           </div>
+          {/* Mobile Close Button */}
+          <button onClick={() => setIsSidebarOpen(false)} className="md:hidden text-slate-400 hover:text-white">
+            <X className="w-6 h-6" />
+          </button>
         </div>
 
-        <nav className="flex-1 p-4 space-y-1">
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
           {navItems.map((item) => {
             const Icon = item.icon;
             return (
               <button
                 key={item.id}
-                onClick={() => setActiveTab(item.id)}
+                onClick={() => {
+                    setActiveTab(item.id);
+                    setIsSidebarOpen(false); // Close sidebar on mobile when item clicked
+                }}
                 className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
                   activeTab === item.id 
                     ? 'bg-emerald-600 text-white' 
@@ -1047,18 +1067,27 @@ const FeelMatchaDashboard = () => {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 md:ml-64 overflow-y-auto">
+      <main className="flex-1 h-full overflow-y-auto bg-slate-50 min-w-0">
         {/* Header */}
-        <header className="bg-white border-b border-slate-200 sticky top-0 z-20 px-8 py-4 flex justify-end items-center gap-4">
+        <header className="bg-white border-b border-slate-200 sticky top-0 z-20 px-4 md:px-8 py-4 flex justify-between md:justify-end items-center gap-4">
+            
+            {/* Mobile Menu Button */}
+            <button 
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)} 
+                className="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg"
+            >
+                <Menu className="w-6 h-6" />
+            </button>
+
             <div className="flex flex-wrap items-center gap-3 w-full md:w-auto justify-end">
                 {/* Global Filters */}
-                <div className="relative group">
+                <div className="relative group hidden sm:block"> {/* Hide on very small screens if needed, or adjust */}
                     <button className="flex items-center gap-2 px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100">
                         <Truck className="w-4 h-4" />
                         {selectedOutlet}
                     </button>
                     {/* Mock Dropdown */}
-                    <div className="absolute top-full right-0 mt-2 w-48 bg-white border border-slate-200 shadow-lg rounded-lg hidden group-hover:block p-1">
+                    <div className="absolute top-full right-0 mt-2 w-48 bg-white border border-slate-200 shadow-lg rounded-lg hidden group-hover:block p-1 z-50">
                         {['All Network', 'Kemang', 'PIK Avenue', 'Cloud Kitchen 1'].map(o => (
                             <button key={o} onClick={() => setSelectedOutlet(o)} className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-md">
                                 {o}
@@ -1068,35 +1097,35 @@ const FeelMatchaDashboard = () => {
                 </div>
 
                 {/* Date Picker Input Group (Start Date - End Date) */}
-                <div className="flex items-center gap-2 px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium text-slate-700">
-                    <Calendar className="w-4 h-4 text-slate-600" />
-                    <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 px-2 md:px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 overflow-hidden">
+                    <Calendar className="w-4 h-4 text-slate-600 hidden sm:block" />
+                    <div className="flex items-center gap-1 md:gap-2">
                         <input 
                           type="date" 
                           value={startDate}
                           onChange={(e) => setStartDate(e.target.value)}
-                          className="bg-transparent border-none focus:ring-0 text-slate-800 p-0 text-sm font-medium cursor-pointer w-28"
+                          className="bg-transparent border-none focus:ring-0 text-slate-800 p-0 text-xs md:text-sm font-medium cursor-pointer w-24 md:w-28 outline-none"
                         />
                         <span className="text-slate-600 text-xs">to</span>
                         <input 
                           type="date" 
                           value={endDate}
                           onChange={(e) => setEndDate(e.target.value)}
-                          className="bg-transparent border-none focus:ring-0 text-slate-800 p-0 text-sm font-medium cursor-pointer w-28"
+                          className="bg-transparent border-none focus:ring-0 text-slate-800 p-0 text-xs md:text-sm font-medium cursor-pointer w-24 md:w-28 outline-none"
                         />
                     </div>
                 </div>
 
                 <div className="h-6 w-px bg-slate-300 mx-2 hidden md:block"></div>
 
-                <button className="p-2 text-slate-600 hover:text-slate-800">
+                <button className="p-2 text-slate-600 hover:text-slate-800 hidden sm:block">
                     <Settings className="w-5 h-5" />
                 </button>
             </div>
         </header>
 
         {/* Dynamic Content */}
-        <div className="p-8">
+        <div className="p-4 md:p-8 w-full mx-auto">
             {renderContent()}
         </div>
         
