@@ -134,7 +134,7 @@ const alerts = [
 // --- COMPONENTS ---
 
 const Card = ({ children, className = "" }) => (
-  <div className={`bg-white rounded-xl border border-slate-200 shadow-sm p-5 ${className}`}>
+  <div className={`bg-white rounded-xl border border-slate-200 shadow-sm p-5 w-full ${className}`}>
     {children}
   </div>
 );
@@ -162,7 +162,7 @@ const FeelMatchaDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedOutlet, setSelectedOutlet] = useState('All Network');
   
-  // Date State: Range (Start & End)
+  // Date State
   const today = new Date();
   const nextWeek = new Date(today);
   nextWeek.setDate(today.getDate() + 7);
@@ -170,27 +170,23 @@ const FeelMatchaDashboard = () => {
   const [startDate, setStartDate] = useState(today.toISOString().split('T')[0]);
   const [endDate, setEndDate] = useState(nextWeek.toISOString().split('T')[0]);
 
-  // Dynamic Date Calculation Helpers
   const dateInfo = useMemo(() => {
     const sDate = new Date(startDate);
     const eDate = new Date(endDate);
-    
     const dateOptions = { day: 'numeric', month: 'short', year: 'numeric' };
     
     if (isNaN(sDate.getTime()) || isNaN(eDate.getTime())) {
-        return { rangeStr: '-', endStr: '-', endStrShort: '-' }; // Ensure fallback
+        return { rangeStr: '-', endStr: '-', endStrShort: '-' }; 
     }
 
     const startStr = sDate.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
     const endStr = eDate.toLocaleDateString('en-US', dateOptions);
     const endStrShort = eDate.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
-
     const rangeStr = `${startStr} - ${endStr}`;
 
     return { rangeStr, endStr, endStrShort };
   }, [startDate, endDate]);
 
-  // Sidebar Navigation
   const navItems = [
     { id: 'overview', label: 'Overview', icon: LayoutDashboard },
     { id: 'forecast', label: 'Demand Forecast', icon: TrendingUp },
@@ -202,20 +198,13 @@ const FeelMatchaDashboard = () => {
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'overview':
-        return <OverviewView dateInfo={dateInfo} />;
-      case 'forecast':
-        return <ForecastView dateInfo={dateInfo} />;
-      case 'inventory':
-        return <InventoryView dateInfo={dateInfo} />;
-      case 'waste':
-        return <WasteView dateInfo={dateInfo} />;
-      case 'menu':
-        return <MenuAnalysisView dateInfo={dateInfo} />;
-      case 'ops':
-        return <OperationsView dateInfo={dateInfo} />;
-      default:
-        return <OverviewView dateInfo={dateInfo} />;
+      case 'overview': return <OverviewView dateInfo={dateInfo} />;
+      case 'forecast': return <ForecastView dateInfo={dateInfo} />;
+      case 'inventory': return <InventoryView dateInfo={dateInfo} />;
+      case 'waste': return <WasteView dateInfo={dateInfo} />;
+      case 'menu': return <MenuAnalysisView dateInfo={dateInfo} />;
+      case 'ops': return <OperationsView dateInfo={dateInfo} />;
+      default: return <OverviewView dateInfo={dateInfo} />;
     }
   };
 
@@ -223,7 +212,6 @@ const FeelMatchaDashboard = () => {
 
   const OverviewView = ({ dateInfo }) => (
     <div className="space-y-6 w-full">
-      {/* Title & Date Header in Content */}
       <div className="mb-4">
         <h2 className="text-2xl font-bold text-slate-800 mb-1">Overview</h2>
         <div className="flex items-center gap-2 text-slate-500">
@@ -231,9 +219,7 @@ const FeelMatchaDashboard = () => {
             <span className="text-sm font-medium">Selected Period: <span className="text-slate-900 font-bold">{dateInfo.rangeStr}</span></span>
         </div>
       </div>
-
-      {/* KPI Row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
         {kpiData.map((kpi, idx) => (
           <Card key={idx}>
             <div className="flex justify-between items-start mb-2">
@@ -252,10 +238,8 @@ const FeelMatchaDashboard = () => {
           </Card>
         ))}
       </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Chart: Forecast vs Actual */}
-        <div className="lg:col-span-2">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full">
+        <div className="lg:col-span-2 w-full">
           <Card className="h-full">
             <div className="flex justify-between items-center mb-6">
               <div>
@@ -272,10 +256,7 @@ const FeelMatchaDashboard = () => {
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                   <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
                   <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
-                  <Tooltip 
-                    contentStyle={{ backgroundColor: '#fff', borderRadius: '8px', border: '1px solid #e2e8f0' }}
-                    formatter={(value, name) => [value, name === 'forecast' ? 'Forecast Demand' : name === 'actual' ? 'Actual Sales' : name]}
-                  />
+                  <Tooltip formatter={(value, name) => [value, name === 'forecast' ? 'Forecast Demand' : name === 'actual' ? 'Actual Sales' : name]} />
                   <Legend />
                   <Area type="monotone" dataKey="upper" stroke="none" fill="#f1f5f9" name="Confidence Interval" />
                   <Area type="monotone" dataKey="lower" stroke="none" fill="#fff" /> 
@@ -286,8 +267,6 @@ const FeelMatchaDashboard = () => {
             </div>
           </Card>
         </div>
-
-        {/* Action Panel / Alerts */}
         <Card>
           <div className="flex justify-between items-center mb-4">
             <h3 className="font-bold text-slate-800 flex items-center gap-2">
@@ -308,8 +287,6 @@ const FeelMatchaDashboard = () => {
           </div>
         </Card>
       </div>
-
-      {/* Channel Split */}
       <Card>
         <div className="mb-4">
             <h3 className="text-lg font-bold text-slate-800">Demand by Channel Forecast</h3>
@@ -338,7 +315,6 @@ const FeelMatchaDashboard = () => {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold text-slate-800">Demand Projections</h2>
-          {/* Explicit Date for Forecast */}
           <div className="flex items-center gap-2 text-slate-500 text-sm mt-1">
             <Calendar className="w-4 h-4" />
             <span>Target Period: <span className="font-semibold text-slate-700">{dateInfo.rangeStr}</span></span>
@@ -353,7 +329,6 @@ const FeelMatchaDashboard = () => {
           </button>
         </div>
       </div>
-
       <Card>
          <div className="h-80 w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -381,8 +356,7 @@ const FeelMatchaDashboard = () => {
              </div>
          </div>
       </Card>
-
-      <div className="overflow-x-auto rounded-xl border border-slate-200">
+      <div className="overflow-x-auto rounded-xl border border-slate-200 w-full">
         <table className="w-full text-sm text-left">
             <thead className="bg-slate-50 text-slate-500 font-medium">
                 <tr>
@@ -428,8 +402,7 @@ const FeelMatchaDashboard = () => {
                  </button>
             </div>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
              <Card className="bg-slate-50 border-slate-200">
                  <div className="flex justify-between">
                      <span className="text-sm font-medium text-slate-500">Stock Value</span>
@@ -455,7 +428,6 @@ const FeelMatchaDashboard = () => {
                  <div className="text-xs text-slate-500 mt-1">Within tolerance (&lt;2%)</div>
              </Card>
         </div>
-
         <Card>
             <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
                 <Package className="w-5 h-5 text-slate-500" /> Raw Ingredient Levels vs Par
@@ -485,7 +457,6 @@ const FeelMatchaDashboard = () => {
                                             className={`h-full rounded-full ${item.status === 'Low Stock' ? 'bg-rose-500' : item.status === 'Overstock' ? 'bg-purple-500' : 'bg-emerald-500'}`} 
                                             style={{ width: `${Math.min((item.current / item.max) * 100, 100)}%` }}
                                         ></div>
-                                        {/* Min Marker */}
                                         <div className="absolute top-0 bottom-0 w-0.5 bg-black/30" style={{ left: `${(item.min / item.max) * 100}%` }}></div>
                                     </div>
                                 </td>
@@ -515,8 +486,7 @@ const FeelMatchaDashboard = () => {
             </div>
        </div>
 
-       {/* Benchmark Legend */}
-       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2 w-full">
             <div className="bg-emerald-50 border border-emerald-100 p-3 rounded-lg flex items-center gap-3">
                  <div className="p-2 bg-white rounded-full shadow-sm">
                      <Target className="w-4 h-4 text-emerald-600" />
@@ -546,7 +516,7 @@ const FeelMatchaDashboard = () => {
             </div>
        </div>
 
-       <div className="grid grid-cols-1 gap-6">
+       <div className="grid grid-cols-1 gap-6 w-full">
             <Card>
                 <div className="flex justify-between mb-6">
                     <h3 className="font-bold text-slate-800">Sell-Through Overview (Pastry vs Seasonal)</h3>
@@ -568,14 +538,11 @@ const FeelMatchaDashboard = () => {
                     </ResponsiveContainer>
                 </div>
             </Card>
-
-            {/* Detailed Table for Sell-Through */}
             <Card>
                 <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2 justify-between w-full">
                     <div className="flex items-center gap-2">
                         <ClipboardX className="w-5 h-5 text-slate-500" /> Daily Sell-Through Report
                     </div>
-                    {/* Explicit Date for Waste Report */}
                     <span className="text-xs font-medium text-slate-400 bg-slate-100 px-2 py-1 rounded">Period: {dateInfo.rangeStr}</span>
                 </h3>
                 <div className="overflow-x-auto">
@@ -623,7 +590,7 @@ const FeelMatchaDashboard = () => {
   );
 
   const MenuAnalysisView = ({ dateInfo }) => {
-    const [viewMode, setViewMode] = useState('matrix'); // 'matrix' or 'pareto'
+    const [viewMode, setViewMode] = useState('matrix'); 
 
     return (
       <div className="space-y-6 w-full">
@@ -687,8 +654,7 @@ const FeelMatchaDashboard = () => {
                     </div>
                 </Card>
 
-                {/* Category Deep-Dive Insights (Modified for Data Only) */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
                     <Card className="border-l-4 border-l-emerald-500">
                         <div className="flex items-center gap-3 mb-3">
                             <div className="p-2 bg-emerald-100 rounded-lg text-emerald-600">
@@ -785,7 +751,7 @@ const FeelMatchaDashboard = () => {
             </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
              {techImpactData.map((item, idx) => (
                  <Card key={idx} className="bg-slate-900 text-white border-slate-800">
                      <h4 className="text-slate-400 text-xs uppercase font-bold tracking-wider">{item.metric}</h4>
@@ -798,8 +764,7 @@ const FeelMatchaDashboard = () => {
              ))}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Tech Impact Cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
             <Card>
                 <div className="flex justify-between mb-4">
                     <h3 className="font-bold text-slate-800 flex items-center gap-2">
@@ -852,11 +817,8 @@ const FeelMatchaDashboard = () => {
     </div>
   );
 
-  // --- SCAFFOLDING ---
-
   return (
-    <div className="flex h-screen bg-slate-50 font-sans text-slate-900">
-      {/* Sidebar */}
+    <div className="flex h-screen bg-slate-50 font-sans text-slate-900 overflow-hidden">
       <aside className="w-64 bg-slate-900 text-white flex flex-col fixed h-full z-10 hidden md:flex">
         <div className="p-6 border-b border-slate-800">
           <div className="flex items-center gap-3">
@@ -901,19 +863,15 @@ const FeelMatchaDashboard = () => {
         </div>
       </aside>
 
-      {/* Main Content Area */}
-      <main className="flex-1 md:ml-64 overflow-y-auto">
-        {/* Header */}
+      <main className="flex-1 md:ml-64 h-full overflow-y-auto bg-slate-50">
         <header className="bg-white border-b border-slate-200 sticky top-0 z-20 px-8 py-4 flex justify-end items-center gap-4">
             <div className="flex flex-wrap items-center gap-3 w-full md:w-auto justify-end">
-                {/* Global Filters */}
                 <div className="relative group">
                     <button className="flex items-center gap-2 px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100">
                         <Truck className="w-4 h-4" />
                         {selectedOutlet}
                     </button>
-                    {/* Mock Dropdown */}
-                    <div className="absolute top-full right-0 mt-2 w-48 bg-white border border-slate-200 shadow-lg rounded-lg hidden group-hover:block p-1">
+                    <div className="absolute top-full right-0 mt-2 w-48 bg-white border border-slate-200 shadow-lg rounded-lg hidden group-hover:block p-1 z-50">
                         {['All Network', 'Kemang', 'PIK Avenue', 'Cloud Kitchen 1'].map(o => (
                             <button key={o} onClick={() => setSelectedOutlet(o)} className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-md">
                                 {o}
@@ -922,7 +880,6 @@ const FeelMatchaDashboard = () => {
                     </div>
                 </div>
 
-                {/* Date Picker Input Group (Start Date - End Date) */}
                 <div className="flex items-center gap-2 px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium text-slate-600">
                     <Calendar className="w-4 h-4 text-slate-400" />
                     <div className="flex items-center gap-2">
@@ -930,14 +887,14 @@ const FeelMatchaDashboard = () => {
                           type="date" 
                           value={startDate}
                           onChange={(e) => setStartDate(e.target.value)}
-                          className="bg-transparent border-none focus:ring-0 text-slate-700 p-0 text-sm font-medium cursor-pointer w-28"
+                          className="bg-transparent border-none focus:ring-0 text-slate-700 p-0 text-sm font-medium cursor-pointer w-28 outline-none"
                         />
                         <span className="text-slate-400 text-xs">to</span>
                         <input 
                           type="date" 
                           value={endDate}
                           onChange={(e) => setEndDate(e.target.value)}
-                          className="bg-transparent border-none focus:ring-0 text-slate-700 p-0 text-sm font-medium cursor-pointer w-28"
+                          className="bg-transparent border-none focus:ring-0 text-slate-700 p-0 text-sm font-medium cursor-pointer w-28 outline-none"
                         />
                     </div>
                 </div>
@@ -950,8 +907,7 @@ const FeelMatchaDashboard = () => {
             </div>
         </header>
 
-        {/* Dynamic Content */}
-        <div className="p-8">
+        <div className="p-8 w-full max-w-[1600px] mx-auto">
             {renderContent()}
         </div>
         
