@@ -133,10 +133,6 @@ const storeAuditData = [
     { name: 'Cloud Kit 1', x: 450, y: 50, z: 30, type: 'Cloud' },
     { name: 'PIM 3', x: 500, y: 350, z: 10, type: 'Mall' },
     { name: 'Bekasi', x: 550, y: 100, z: 24, type: 'Street' },
-    { name: 'Senopati', x: 1100, y: 300, z: 28, type: 'Street' },
-    { name: 'Kelapa Gading', x: 700, y: 200, z: 20, type: 'Street' },
-    { name: 'BSD City', x: 650, y: 180, z: 23, type: 'Street' },
-    { name: 'Depok', x: 400, y: 90, z: 15, type: 'Street' },
 ];
 
 // 8. Alerts
@@ -688,7 +684,24 @@ const FeelMatchaDashboard = () => {
                                 <XAxis type="number" dataKey="x" name="Margin" unit="%" domain={[0, 100]} tick={{fill: '#334155'}} />
                                 <YAxis type="number" dataKey="y" name="Volume" unit=" orders" domain={[0, 100]} tick={{fill: '#334155'}} />
                                 <ZAxis type="number" dataKey="z" range={[100, 1000]} name="Revenue" />
-                                <Tooltip cursor={{ strokeDasharray: '3 3' }} />
+                                <Tooltip 
+                                    cursor={{ strokeDasharray: '3 3' }} 
+                                    content={({ active, payload }) => {
+                                        if (active && payload && payload.length) {
+                                            const data = payload[0].payload;
+                                            return (
+                                                <div className="bg-white p-2 border border-slate-200 shadow-md rounded text-xs">
+                                                    <p className="font-bold text-slate-900">{data.name}</p>
+                                                    <p className="text-slate-600">Category: {data.category}</p>
+                                                    <p className="text-slate-600">Margin: {data.x}%</p>
+                                                    <p className="text-slate-600">Volume: {data.y}</p>
+                                                    <p className="text-slate-600">Revenue: {data.z}</p>
+                                                </div>
+                                            );
+                                        }
+                                        return null;
+                                    }}
+                                />
                                 <Scatter name="Menu Items" data={menuMatrixData} fill="#8884d8">
                                     {menuMatrixData.map((entry, index) => (
                                         <Cell key={`cell-${index}`} fill={
