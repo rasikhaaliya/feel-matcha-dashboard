@@ -237,12 +237,15 @@ const FeelMatchaDashboard = () => {
 
   const OverviewView = ({ dateInfo }) => (
     <div className="space-y-6 w-full">
-      {/* Title & Date Header in Content */}
-      <div className="mb-4">
-        <h2 className="text-2xl font-bold text-slate-900 mb-1">Overview</h2>
-        <div className="flex items-center gap-2 text-slate-700">
-            <Clock className="w-4 h-4" />
-            <span className="text-sm font-medium">Selected Period: <span className="text-slate-900 font-bold">{dateInfo.rangeStr}</span></span>
+      {/* Title & Date Header in Content - UPDATED LAYOUT */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <div>
+            <h2 className="text-2xl font-bold text-slate-900">Overview</h2>
+            <p className="text-slate-500 text-sm mt-1">Snapshot of network performance</p>
+        </div>
+        <div className="flex items-center gap-2 text-slate-700 bg-white px-3 py-2 rounded-lg border border-slate-200 shadow-sm">
+            <Clock className="w-4 h-4 text-emerald-600" />
+            <span className="text-sm font-medium">Period: <span className="text-slate-900 font-bold">{dateInfo.rangeStr}</span></span>
         </div>
       </div>
 
@@ -274,7 +277,7 @@ const FeelMatchaDashboard = () => {
             <div className="flex justify-between items-center mb-6">
               <div>
                 <h3 className="text-lg font-bold text-slate-900">Network Demand Trend</h3>
-                <p className="text-sm text-slate-700">Actual Sales vs Forecasted Demand ({dateInfo.rangeStr})</p>
+                <p className="text-sm text-slate-700">Actual Sales vs Forecasted Demand</p>
               </div>
               <div className="flex gap-2">
                  <Badge status="info" text="Model: ETS + Holt-Winters" />
@@ -328,7 +331,7 @@ const FeelMatchaDashboard = () => {
       <Card>
         <div className="mb-4">
             <h3 className="text-lg font-bold text-slate-900">Demand by Channel Forecast</h3>
-            <p className="text-sm text-slate-700">Projected split for {dateInfo.rangeStr}</p>
+            <p className="text-sm text-slate-700">Projected channel split</p>
         </div>
         <div className="h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">
@@ -350,10 +353,9 @@ const FeelMatchaDashboard = () => {
 
   const ForecastView = ({ dateInfo }) => (
     <div className="space-y-6 w-full">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h2 className="text-2xl font-bold text-slate-900">Demand Projections</h2>
-          {/* Explicit Date for Forecast */}
           <div className="flex items-center gap-2 text-slate-700 text-sm mt-1">
             <Calendar className="w-4 h-4" />
             <span>Target Period: <span className="font-semibold text-slate-900">{dateInfo.rangeStr}</span></span>
@@ -430,7 +432,7 @@ const FeelMatchaDashboard = () => {
 
   const InventoryView = ({ dateInfo }) => (
     <div className="space-y-6 w-full">
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
               <h2 className="text-2xl font-bold text-slate-900">Inventory & Par Levels</h2>
               <div className="flex items-center gap-2 text-slate-700 text-sm mt-1">
@@ -518,7 +520,7 @@ const FeelMatchaDashboard = () => {
 
   const WasteView = ({ dateInfo }) => (
     <div className="space-y-6 w-full">
-       <div className="flex justify-between items-center">
+       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
               <h2 className="text-2xl font-bold text-slate-900">Waste & Sell-Through Data</h2>
               <p className="text-slate-600">Monitoring performance for: <span className="font-semibold">{dateInfo.rangeStr}</span></p>
@@ -642,7 +644,7 @@ const FeelMatchaDashboard = () => {
 
     return (
       <div className="space-y-6 w-full">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
               <div>
                 <h2 className="text-2xl font-bold text-slate-900">Menu Engineering Analysis</h2>
                 <div className="flex items-center gap-2 text-slate-600 text-sm mt-1">
@@ -791,7 +793,7 @@ const FeelMatchaDashboard = () => {
 
   const AssetOptimizationView = ({ dateInfo }) => (
     <div className="space-y-6 w-full">
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
               <h2 className="text-2xl font-bold text-slate-900">Asset Optimization & Store Audit</h2>
               <div className="flex items-center gap-2 text-slate-600 text-sm mt-1">
@@ -874,11 +876,19 @@ const FeelMatchaDashboard = () => {
                             </Scatter>
                         </ScatterChart>
                     </ResponsiveContainer>
-                    {/* Quadrant Labels */}
-                    <div className="absolute top-4 left-16 text-rose-700 font-bold text-xs bg-white/90 p-1 border border-rose-200 rounded">High Rent / Low Revenue</div>
-                    <div className="absolute top-4 right-4 text-blue-700 font-bold text-xs bg-white/90 p-1 border border-blue-200 rounded">High Rent / High Revenue</div>
-                    <div className="absolute bottom-12 left-16 text-amber-700 font-bold text-xs bg-white/90 p-1 border border-amber-200 rounded">Low Rent / Low Revenue</div>
-                    <div className="absolute bottom-12 right-4 text-emerald-700 font-bold text-xs bg-white/90 p-1 border border-emerald-200 rounded">Low Rent / High Revenue</div>
+                    {/* Quadrant Labels - Updated to prevent stacking */}
+                    <div className="absolute top-4 left-16 text-rose-700 font-bold text-[10px] sm:text-xs bg-white/90 p-1 border border-rose-200 rounded shadow-sm whitespace-nowrap">
+                        High Rent / Low Rev
+                    </div>
+                    <div className="absolute top-4 right-4 text-blue-700 font-bold text-[10px] sm:text-xs bg-white/90 p-1 border border-blue-200 rounded shadow-sm whitespace-nowrap">
+                        High Rent / High Rev
+                    </div>
+                    <div className="absolute bottom-12 left-16 text-amber-700 font-bold text-[10px] sm:text-xs bg-white/90 p-1 border border-amber-200 rounded shadow-sm whitespace-nowrap">
+                        Low Rent / Low Rev
+                    </div>
+                    <div className="absolute bottom-12 right-4 text-emerald-700 font-bold text-[10px] sm:text-xs bg-white/90 p-1 border border-emerald-200 rounded shadow-sm whitespace-nowrap">
+                        Low Rent / High Rev
+                    </div>
                 </div>
              </Card>
 
@@ -922,7 +932,7 @@ const FeelMatchaDashboard = () => {
 
   const OperationsView = ({ dateInfo }) => (
     <div className="space-y-6 w-full">
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
               <h2 className="text-2xl font-bold text-slate-900">Tech & Ops Impact Analysis</h2>
               <div className="flex items-center gap-2 text-slate-600 text-sm mt-1">
