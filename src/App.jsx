@@ -133,6 +133,10 @@ const storeAuditData = [
     { name: 'Cloud Kit 1', x: 450, y: 50, z: 30, type: 'Cloud' },
     { name: 'PIM 3', x: 500, y: 350, z: 10, type: 'Mall' },
     { name: 'Bekasi', x: 550, y: 100, z: 24, type: 'Street' },
+    { name: 'Senopati', x: 1100, y: 300, z: 28, type: 'Street' },
+    { name: 'Kelapa Gading', x: 700, y: 200, z: 20, type: 'Street' },
+    { name: 'BSD City', x: 650, y: 180, z: 23, type: 'Street' },
+    { name: 'Depok', x: 400, y: 90, z: 15, type: 'Street' },
 ];
 
 // 8. Alerts
@@ -861,9 +865,25 @@ const FeelMatchaDashboard = () => {
                             <XAxis type="number" dataKey="x" name="Revenue" unit="jt" domain={[0, 1500]} tick={{fill: '#334155'}} label={{ value: 'Revenue (Juta)', position: 'bottom', offset: 0 }} />
                             <YAxis type="number" dataKey="y" name="Rent" unit="jt" domain={[0, 600]} tick={{fill: '#334155'}} label={{ value: 'Rent Cost (Juta)', angle: -90, position: 'left' }} />
                             <ZAxis type="number" dataKey="z" range={[100, 500]} name="Margin %" />
-                            <Tooltip cursor={{ strokeDasharray: '3 3' }} />
-                            <ReferenceLine y={300} stroke="red" strokeDasharray="3 3" label="High Rent Threshold" />
-                            <ReferenceLine x={750} stroke="green" strokeDasharray="3 3" label="Target Revenue" />
+                            <Tooltip 
+                                cursor={{ strokeDasharray: '3 3' }} 
+                                content={({ active, payload }) => {
+                                    if (active && payload && payload.length) {
+                                        const data = payload[0].payload;
+                                        return (
+                                            <div className="bg-white p-2 border border-slate-200 shadow-md rounded text-xs">
+                                                <p className="font-bold text-slate-900">{data.name}</p>
+                                                <p className="text-slate-600">Revenue: Rp {data.x}jt</p>
+                                                <p className="text-slate-600">Rent: Rp {data.y}jt</p>
+                                                <p className="text-slate-600">Margin: {data.z}%</p>
+                                            </div>
+                                        );
+                                    }
+                                    return null;
+                                }}
+                            />
+                            <ReferenceLine y={300} stroke="red" strokeDasharray="3 3" />
+                            <ReferenceLine x={750} stroke="green" strokeDasharray="3 3" />
                             <Scatter name="Outlets" data={storeAuditData} fill="#8884d8">
                                 {storeAuditData.map((entry, index) => (
                                     <Cell key={`cell-${index}`} fill={
@@ -876,18 +896,24 @@ const FeelMatchaDashboard = () => {
                             </Scatter>
                         </ScatterChart>
                     </ResponsiveContainer>
-                    {/* Quadrant Labels - Updated to prevent stacking */}
-                    <div className="absolute top-4 left-16 text-rose-700 font-bold text-[10px] sm:text-xs bg-white/90 p-1 border border-rose-200 rounded shadow-sm whitespace-nowrap">
-                        High Rent / Low Rev
+                </div>
+                {/* Legend Below Chart - Replaces Absolute Labels */}
+                <div className="grid grid-cols-2 gap-2 mt-4 text-xs">
+                    <div className="p-2 bg-rose-50 border border-rose-100 rounded text-center">
+                        <span className="block font-bold text-rose-700">High Rent / Low Rev</span>
+                        <div className="w-2 h-2 rounded-full bg-rose-500 mx-auto mt-1"></div>
                     </div>
-                    <div className="absolute top-4 right-4 text-blue-700 font-bold text-[10px] sm:text-xs bg-white/90 p-1 border border-blue-200 rounded shadow-sm whitespace-nowrap">
-                        High Rent / High Rev
+                    <div className="p-2 bg-blue-50 border border-blue-100 rounded text-center">
+                        <span className="block font-bold text-blue-700">High Rent / High Rev</span>
+                        <div className="w-2 h-2 rounded-full bg-blue-500 mx-auto mt-1"></div>
                     </div>
-                    <div className="absolute bottom-12 left-16 text-amber-700 font-bold text-[10px] sm:text-xs bg-white/90 p-1 border border-amber-200 rounded shadow-sm whitespace-nowrap">
-                        Low Rent / Low Rev
+                    <div className="p-2 bg-amber-50 border border-amber-100 rounded text-center">
+                        <span className="block font-bold text-amber-700">Low Rent / Low Rev</span>
+                        <div className="w-2 h-2 rounded-full bg-amber-500 mx-auto mt-1"></div>
                     </div>
-                    <div className="absolute bottom-12 right-4 text-emerald-700 font-bold text-[10px] sm:text-xs bg-white/90 p-1 border border-emerald-200 rounded shadow-sm whitespace-nowrap">
-                        Low Rent / High Rev
+                    <div className="p-2 bg-emerald-50 border border-emerald-100 rounded text-center">
+                        <span className="block font-bold text-emerald-700">Low Rent / High Rev</span>
+                        <div className="w-2 h-2 rounded-full bg-emerald-500 mx-auto mt-1"></div>
                     </div>
                 </div>
              </Card>
@@ -1098,7 +1124,7 @@ const FeelMatchaDashboard = () => {
                     </button>
                     {/* Mock Dropdown */}
                     <div className="absolute top-full right-0 mt-2 w-48 bg-white border border-slate-200 shadow-lg rounded-lg hidden group-hover:block p-1 z-50">
-                        {['All Network', 'Kemang', 'PIK Avenue', 'Cloud Kitchen 1'].map(o => (
+                        {['All Network', 'Kemang', 'PIK Avenue', 'Grand Indonesia', 'Bintaro', 'Cloud Kitchen 1', 'PIM 3', 'Bekasi', 'BSD', 'Kelapa Gading', 'Senopati'].map(o => (
                             <button key={o} onClick={() => setSelectedOutlet(o)} className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-md">
                                 {o}
                             </button>
