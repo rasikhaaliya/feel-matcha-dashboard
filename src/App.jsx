@@ -6,21 +6,21 @@ import {
 import { 
   LayoutDashboard, TrendingUp, Trash2, Utensils, Users, Settings, 
   AlertTriangle, ArrowUpRight, ArrowDownRight, Calendar, Filter, 
-  Download, Search, Info, ChefHat, DollarSign, Truck, 
-  UserCheck, ClipboardX, Clock, QrCode, Cpu, Lightbulb, Coffee, Croissant, Target, Package, Scale, Building, Menu, X, Wallet, Activity, Smartphone, MousePointerClick, Database
+  Download, Search, Info, ChefHat, DollarSign, Truck, PieChart as IconPieChart,
+  UserCheck, ClipboardX, Clock, QrCode, Cpu, Lightbulb, Coffee, Croissant, Target, Package, Scale, Building, Menu, X, Wallet, Activity, Smartphone, Database
 } from 'lucide-react';
 
 // --- MOCK DATA GENERATION ---
 
-// 1. Executive Pulse Data
+// 1. Executive Pulse Data (Financial Focus)
 const kpiData = [
   { title: 'Net Sales (Live)', value: 'Rp 42.5M', unit: 'Today', trend: '+8.4%', status: 'good', icon: Wallet },
-  { title: 'Gross Profit', value: 'Rp 24.1M', unit: '56.7%', trend: '+2.1%', status: 'good', icon: DollarSign },
+  { title: 'Gross Profit', value: 'Rp 24.1M', unit: '56.7% Margin', trend: '+2.1%', status: 'good', icon: DollarSign },
   { title: 'COGS %', value: '43.3%', unit: 'Target <40%', trend: '+1.5%', status: 'warning', icon: Scale },
   { title: 'Labor Cost %', value: '28.1%', unit: 'Target <25%', trend: '+3.1%', status: 'warning', icon: Users },
 ];
 
-// 2. Forecast Data
+// 2. Forecast Data (Demand Planning)
 const forecastData = [
   { day: 'Mon', actual: 1200, forecast: 1250, lower: 1100, upper: 1400, event: '' },
   { day: 'Tue', actual: 1350, forecast: 1300, lower: 1150, upper: 1450, event: '' },
@@ -41,7 +41,7 @@ const channelSplitData = [
   { name: 'Sun', DineIn: 850, Delivery: 1050, CloudKitchen: 350 },
 ];
 
-// 3. Inventory & Waste Data
+// 3. Inventory & Waste Data (Real-time Tracking)
 const wasteDetailedData = [
   { id: 1, name: 'Matcha Croissant', category: 'Pastry', produced: 150, sold: 138, wasted: 12, sellThrough: 92.0 },
   { id: 2, name: 'Hojicha Puff', category: 'Pastry', produced: 100, sold: 95, wasted: 5, sellThrough: 95.0 },
@@ -56,14 +56,14 @@ const wasteChartData = wasteDetailedData.map(item => ({
   wasted: item.wasted
 }));
 
-// Helper to determine status based on business rules
+// Helper to determine status based on business rules (Data Indicator Only)
 const getSellThroughStatus = (pct) => {
-  if (pct >= 90) return 'Optimal';
-  if (pct >= 75) return 'Warning';
-  return 'Critical';
+  if (pct >= 90) return 'High Efficiency';
+  if (pct >= 75) return 'Moderate';
+  return 'Low Efficiency'; // Neutral naming
 };
 
-// 4. Menu Engineering Data
+// 4. Menu Engineering Data (Pareto & PMix)
 const menuMatrixData = [
   { name: 'Signature Matcha Latte', x: 95, y: 80, z: 500, category: 'Star' }, 
   { name: 'Matcha Ice Cream', x: 90, y: 40, z: 450, category: 'Plowhorse' }, 
@@ -86,11 +86,17 @@ const paretoData = [
   { name: 'Sakura Tea', revenue: 4000000, cumulativePercentage: 100 },
 ];
 
-// 5. Operations Data
-const techImpactData = [
-  { metric: 'SPMH (Sales/Man-Hour)', manual: 150000, machine: 225000, improvement: '50% Higher Efficiency' },
-  { metric: 'Error Rate (%)', manual: 4.5, machine: 0.8, improvement: '82% Less Errors' },
-  { metric: 'Staff Training (Days)', manual: 14, machine: 3, improvement: 'Faster Onboarding' },
+// 5. Operations Data (Workforce Intelligence: SPMH)
+const spmhData = [
+  { hour: '10:00', spmh: 150000, laborCost: 35, target: 200000 },
+  { hour: '11:00', spmh: 180000, laborCost: 30, target: 200000 },
+  { hour: '12:00', spmh: 350000, laborCost: 15, target: 200000 }, // High efficiency
+  { hour: '13:00', spmh: 300000, laborCost: 18, target: 200000 },
+  { hour: '14:00', spmh: 120000, laborCost: 40, target: 200000 }, // Low efficiency
+  { hour: '15:00', spmh: 140000, laborCost: 35, target: 200000 },
+  { hour: '16:00', spmh: 200000, laborCost: 25, target: 200000 },
+  { hour: '17:00', spmh: 250000, laborCost: 20, target: 200000 },
+  { hour: '18:00', spmh: 380000, laborCost: 12, target: 200000 },
 ];
 
 const errorSourceData = [
@@ -98,21 +104,6 @@ const errorSourceData = [
   { source: 'QR Ordering (User)', count: 5 }, 
   { source: 'Kitchen Prep (Human)', count: 12 },
   { source: 'Machine Calibration', count: 2 }, 
-];
-
-const hourlyTrafficData = [
-  { time: '10:00', Kemang: 45, PIK: 30, Bintaro: 25 },
-  { time: '11:00', Kemang: 60, PIK: 45, Bintaro: 35 },
-  { time: '12:00', Kemang: 120, PIK: 90, Bintaro: 80 }, // Lunch Peak
-  { time: '13:00', Kemang: 100, PIK: 85, Bintaro: 70 },
-  { time: '14:00', Kemang: 50, PIK: 40, Bintaro: 30 },
-  { time: '15:00', Kemang: 55, PIK: 45, Bintaro: 35 },
-  { time: '16:00', Kemang: 70, PIK: 60, Bintaro: 50 },
-  { time: '17:00', Kemang: 90, PIK: 80, Bintaro: 60 },
-  { time: '18:00', Kemang: 110, PIK: 120, Bintaro: 90 }, // Dinner/After work Peak
-  { time: '19:00', Kemang: 95, PIK: 110, Bintaro: 85 },
-  { time: '20:00', Kemang: 70, PIK: 80, Bintaro: 60 },
-  { time: '21:00', Kemang: 40, PIK: 50, Bintaro: 30 },
 ];
 
 // 6. Inventory Data
@@ -124,7 +115,7 @@ const inventoryData = [
     { id: 5, item: 'Red Bean Paste', unit: 'kg', current: 2.1, min: 2.0, max: 6.0, consumption: 0.4, status: 'Warning' },
 ];
 
-// 7. Store Audit Data
+// 7. Store Audit Data (Asset Optimization)
 const storeAuditData = [
     { name: 'Kemang', x: 850, y: 150, z: 25, type: 'Street' },
     { name: 'PIK Avenue', x: 1200, y: 450, z: 18, type: 'Mall' },
@@ -135,17 +126,10 @@ const storeAuditData = [
     { name: 'Bekasi', x: 550, y: 100, z: 24, type: 'Street' },
 ];
 
-// 8. CRM Data (UPDATED: Smart Order Integration)
+// 8. CRM Data (Customer Data)
 const retentionData = [
   { name: 'New Customers', value: 35, fill: '#10b981' },
   { name: 'Returning', value: 65, fill: '#3b82f6' },
-];
-
-// Comparison of Spend: Smart Order vs Manual
-const spendComparisonData = [
-    { category: 'Beverage', SmartOrder: 45000, Manual: 38000 },
-    { category: 'Food/Pastry', SmartOrder: 35000, Manual: 28000 },
-    { category: 'Add-ons', SmartOrder: 12000, Manual: 5000 },
 ];
 
 const customerSegments = [
@@ -155,11 +139,11 @@ const customerSegments = [
     { type: 'At Risk', count: 150, spend: 'Rp 200rb/mo', visit: '<1x/mo' },
 ];
 
-// 9. Alerts
+// 9. Alerts (Observations Only)
 const alerts = [
   { id: 1, type: 'critical', msg: 'Outlet Bintaro: Labor Cost > 30% yesterday' }, 
-  { id: 2, type: 'info', msg: 'Cuzen Machine Maintenance Scheduled' },
-  { id: 3, type: 'critical', msg: 'QR Adoption at PIK Avenue < 20%' },
+  { id: 2, type: 'info', msg: 'Inventory: Fresh Milk below par level' },
+  { id: 3, type: 'critical', msg: 'Waste: Strawberry Daifuku Sell-Through < 60%' },
 ];
 
 // --- COMPONENTS ---
@@ -179,7 +163,10 @@ const Badge = ({ status, text }) => {
     info: 'bg-blue-100 text-blue-800',
     optimal: 'bg-emerald-100 text-emerald-800',
     'low stock': 'bg-rose-100 text-rose-800',
-    'overstock': 'bg-purple-100 text-purple-800'
+    'overstock': 'bg-purple-100 text-purple-800',
+    'high efficiency': 'bg-emerald-100 text-emerald-800',
+    'moderate': 'bg-amber-100 text-amber-800',
+    'low efficiency': 'bg-rose-100 text-rose-800',
   };
   const statusLower = status ? status.toLowerCase() : 'neutral';
   const colorClass = colors[statusLower] || colors.neutral;
@@ -224,13 +211,13 @@ const FeelMatchaDashboard = () => {
   // Sidebar Navigation
   const navItems = [
     { id: 'overview', label: 'Financial Pulse', icon: Activity },
-    { id: 'crm', label: 'CRM & Loyalty', icon: Users },
+    { id: 'crm', label: 'CRM & Data', icon: Users },
     { id: 'forecast', label: 'Demand Forecast', icon: TrendingUp },
     { id: 'inventory', label: 'Inventory & Par', icon: ChefHat },
     { id: 'waste', label: 'Waste Control', icon: Trash2 },
     { id: 'menu', label: 'Menu Engineering', icon: Utensils },
     { id: 'assets', label: 'Store Portfolio', icon: Building },
-    { id: 'ops', label: 'Tech & Ops Impact', icon: Cpu },
+    { id: 'ops', label: 'Workforce Intel', icon: Cpu },
   ];
 
   const renderContent = () => {
@@ -351,7 +338,7 @@ const FeelMatchaDashboard = () => {
     <div className="space-y-6 w-full">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-              <h2 className="text-2xl font-bold text-slate-900">CRM & Smart Order Loyalty</h2>
+              <h2 className="text-2xl font-bold text-slate-900">CRM & Data Pelanggan</h2>
               <div className="flex items-center gap-2 text-slate-600 text-sm mt-1">
                 <span>Integrated with <span className="font-bold text-emerald-600">Feel Matcha Smart Order</span> (In-store Web)</span>
               </div>
@@ -363,44 +350,7 @@ const FeelMatchaDashboard = () => {
             </div>
         </div>
 
-        {/* Smart Order Performance KPIs */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
-            <Card className="bg-white border-slate-200">
-                <div className="flex justify-between items-start">
-                    <div>
-                        <p className="text-sm font-medium text-slate-500">Smart Order Adoption</p>
-                        <h4 className="text-2xl font-bold text-slate-900 mt-1">72%</h4>
-                        <p className="text-xs text-emerald-600 mt-1 flex items-center gap-1">
-                            <Smartphone className="w-3 h-3" /> of Total Dine-in
-                        </p>
-                    </div>
-                </div>
-            </Card>
-            <Card className="bg-white border-slate-200">
-                <div className="flex justify-between items-start">
-                    <div>
-                        <p className="text-sm font-medium text-slate-500">Customer Data Capture</p>
-                        <h4 className="text-2xl font-bold text-slate-900 mt-1">94%</h4>
-                        <p className="text-xs text-blue-600 mt-1 flex items-center gap-1">
-                            <Database className="w-3 h-3" /> Linked to Phone/WA
-                        </p>
-                    </div>
-                </div>
-            </Card>
-            <Card className="bg-white border-slate-200">
-                <div className="flex justify-between items-start">
-                    <div>
-                        <p className="text-sm font-medium text-slate-500">Avg Ticket Uplift</p>
-                        <h4 className="text-2xl font-bold text-slate-900 mt-1">+18%</h4>
-                        <p className="text-xs text-emerald-600 mt-1 flex items-center gap-1">
-                            <TrendingUp className="w-3 h-3" /> vs Manual Cashier
-                        </p>
-                    </div>
-                </div>
-            </Card>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
              {/* Retention Chart */}
              <Card>
                 <div className="flex justify-between items-center mb-4">
@@ -428,61 +378,37 @@ const FeelMatchaDashboard = () => {
                     </ResponsiveContainer>
                 </div>
                 <div className="text-center text-sm text-slate-600 mt-2">
-                    Returning customers via Smart Order contribute <strong>65%</strong> of revenue.
+                    Historical data for <strong>Demand Planning</strong> accuracy.
                 </div>
              </Card>
 
-             {/* Spend Comparison Chart */}
+             {/* Customer Segments Table */}
              <Card>
-                <div className="flex justify-between items-center mb-4">
-                     <h3 className="font-bold text-slate-900">Spend Analysis: Smart Order vs Manual</h3>
-                     <Badge status="good" text="Smart Order Higher" />
-                </div>
-                <div className="h-64 w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={spendComparisonData} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                            <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-                            <XAxis type="number" tick={{fill: '#334155'}} />
-                            <YAxis dataKey="category" type="category" width={100} tick={{fontSize: 12, fill: '#334155'}} />
-                            <Tooltip cursor={{fill: '#f1f5f9'}} contentStyle={{ color: '#1e293b' }} />
-                            <Legend wrapperStyle={{ color: '#334155' }} />
-                            <Bar dataKey="SmartOrder" fill="#10b981" name="Smart Order (Web)" radius={[0, 4, 4, 0]} />
-                            <Bar dataKey="Manual" fill="#94a3b8" name="Manual (Cashier)" radius={[0, 4, 4, 0]} />
-                        </BarChart>
-                    </ResponsiveContainer>
-                </div>
-                <div className="text-xs text-slate-500 mt-2 text-center">
-                    Smart Order UI drives higher add-on sales (toppings, upsize) through visual prompts.
+                <h3 className="font-bold text-slate-900 mb-4">Customer Segments (RFM)</h3>
+                <div className="overflow-x-auto">
+                    <table className="w-full text-sm text-left">
+                        <thead className="bg-slate-100 text-slate-800 font-bold border-b border-slate-200">
+                            <tr>
+                                <th className="px-4 py-3">Segment</th>
+                                <th className="px-4 py-3">Users</th>
+                                <th className="px-4 py-3">Avg Spend</th>
+                                <th className="px-4 py-3">Freq</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100">
+                            {customerSegments.map((seg, idx) => (
+                                <tr key={idx} className="hover:bg-slate-50">
+                                    <td className="px-4 py-3 font-medium text-slate-800">{seg.type}</td>
+                                    <td className="px-4 py-3 text-slate-600">{seg.count}</td>
+                                    <td className="px-4 py-3 text-slate-900 font-bold">{seg.spend}</td>
+                                    <td className="px-4 py-3 text-slate-600">{seg.visit}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
              </Card>
         </div>
-
-         {/* Customer Segments Table */}
-         <Card>
-            <h3 className="font-bold text-slate-900 mb-4">Customer Segments (RFM from Smart Order Data)</h3>
-            <div className="overflow-x-auto">
-                <table className="w-full text-sm text-left">
-                    <thead className="bg-slate-100 text-slate-800 font-bold border-b border-slate-200">
-                        <tr>
-                            <th className="px-4 py-3">Segment</th>
-                            <th className="px-4 py-3">Users</th>
-                            <th className="px-4 py-3">Avg Spend</th>
-                            <th className="px-4 py-3">Freq</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                        {customerSegments.map((seg, idx) => (
-                            <tr key={idx} className="hover:bg-slate-50">
-                                <td className="px-4 py-3 font-medium text-slate-800">{seg.type}</td>
-                                <td className="px-4 py-3 text-slate-600">{seg.count}</td>
-                                <td className="px-4 py-3 text-slate-900 font-bold">{seg.spend}</td>
-                                <td className="px-4 py-3 text-slate-600">{seg.visit}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-         </Card>
     </div>
   );
 
@@ -490,57 +416,47 @@ const FeelMatchaDashboard = () => {
     <div className="space-y-6 w-full">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-              <h2 className="text-2xl font-bold text-slate-900">Workforce & Operations Intelligence</h2>
+              <h2 className="text-2xl font-bold text-slate-900">Workforce Intelligence</h2>
               <div className="flex items-center gap-2 text-slate-600 text-sm mt-1">
                 <span>Measuring Labor Efficiency (SPMH) & Tech ROI</span>
               </div>
             </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
-             {techImpactData.map((item, idx) => (
-                 <Card key={idx} className="bg-white border-slate-200">
-                     <h4 className="text-slate-600 text-xs uppercase font-bold tracking-wider">{item.metric}</h4>
-                     <div className="flex items-end gap-2 mt-2">
-                         <span className="text-3xl font-bold text-slate-900">{item.machine}</span>
-                         <span className="text-sm text-emerald-600 mb-1">({item.improvement})</span>
-                     </div>
-                     <div className="text-xs text-slate-500 mt-1">vs Manual: {item.manual}</div>
-                 </Card>
-             ))}
-        </div>
+        {/* SPMH Chart */}
+        <Card>
+            <div className="flex justify-between mb-4">
+                <h3 className="font-bold text-slate-800 flex items-center gap-2">
+                    <Users className="w-5 h-5 text-blue-500" /> Sales Per Man-Hour (SPMH) vs Labor Cost %
+                </h3>
+                <Badge status="info" text="Efficiency Metric" />
+            </div>
+            <div className="h-64 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                    <ComposedChart data={spmhData} margin={{ top: 20, right: 30, left: 10, bottom: 5 }}>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                        <XAxis dataKey="hour" tick={{fontSize: 12, fill: '#334155'}} />
+                        <YAxis yAxisId="left" orientation="left" tick={{fontSize: 12, fill: '#334155'}} label={{ value: 'SPMH (IDR)', angle: -90, position: 'left' }} />
+                        <YAxis yAxisId="right" orientation="right" tick={{fontSize: 12, fill: '#334155'}} label={{ value: 'Labor Cost %', angle: 90, position: 'right' }} />
+                        <Tooltip contentStyle={{ color: '#1e293b' }} />
+                        <Legend wrapperStyle={{ color: '#334155' }} />
+                        <Bar yAxisId="left" dataKey="spmh" fill="#3b82f6" name="Sales/Man-Hour" radius={[4, 4, 0, 0]} />
+                        <Line yAxisId="right" type="monotone" dataKey="laborCost" stroke="#f43f5e" strokeWidth={2} name="Labor Cost %" />
+                        <Line yAxisId="left" type="monotone" dataKey="target" stroke="#10b981" strokeDasharray="5 5" name="Target SPMH" dot={false} />
+                    </ComposedChart>
+                </ResponsiveContainer>
+            </div>
+            <div className="mt-2 text-sm text-slate-700 bg-slate-50 p-2 rounded">
+                <strong>Observation:</strong> Low SPMH at 14:00 indicates overstaffing during lull period.
+            </div>
+        </Card>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
+            {/* Tech Impact Cards */}
             <Card>
                 <div className="flex justify-between mb-4">
                     <h3 className="font-bold text-slate-800 flex items-center gap-2">
-                        <Users className="w-5 h-5 text-blue-500" /> Hourly Labor Heatmap (Traffic)
-                    </h3>
-                    <Badge status="info" text="Labor Planning" />
-                </div>
-                <div className="h-64 w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={hourlyTrafficData} margin={{ top: 20, right: 30, left: 10, bottom: 5 }}>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                            <XAxis dataKey="time" tick={{fontSize: 12, fill: '#334155'}} />
-                            <YAxis tick={{fontSize: 12, fill: '#334155'}} />
-                            <Tooltip contentStyle={{ color: '#1e293b' }} />
-                            <Legend wrapperStyle={{ color: '#334155' }} />
-                            <Line type="monotone" dataKey="Kemang" stroke="#10b981" strokeWidth={2} dot={false} />
-                            <Line type="monotone" dataKey="PIK" stroke="#3b82f6" strokeWidth={2} dot={false} />
-                            <Line type="monotone" dataKey="Bintaro" stroke="#f59e0b" strokeWidth={2} dot={false} />
-                        </LineChart>
-                    </ResponsiveContainer>
-                </div>
-                <div className="mt-2 text-sm text-slate-700 bg-slate-50 p-2 rounded">
-                    <strong>Insight:</strong> Peak demand consistently occurs at 12:00 and 18:00. Schedule partial shifts here.
-                </div>
-            </Card>
-
-            <Card>
-                <div className="flex justify-between mb-4">
-                    <h3 className="font-bold text-slate-800 flex items-center gap-2">
-                        <QrCode className="w-5 h-5 text-purple-500" /> Error Rate Analysis
+                        <QrCode className="w-5 h-5 text-purple-500" /> Error Rate Analysis (Validation)
                     </h3>
                     <Badge status="good" text="Impact: Positive" />
                 </div>
@@ -559,15 +475,45 @@ const FeelMatchaDashboard = () => {
                     <strong>Observation:</strong> Manual entry errors remain significantly higher compared to QR ordering channels.
                 </div>
             </Card>
+
+            <Card>
+                <div className="flex justify-between mb-4">
+                    <h3 className="font-bold text-slate-800 flex items-center gap-2">
+                        <Cpu className="w-5 h-5 text-blue-500" /> Automation Impact
+                    </h3>
+                </div>
+                 <div className="space-y-4">
+                     {techImpactData.map((item, idx) => (
+                         <div key={idx} className="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                             <div className="flex justify-between text-xs text-slate-500 mb-1">
+                                 <span>{item.metric}</span>
+                                 <span className="text-emerald-600 font-bold">{item.improvement}</span>
+                             </div>
+                             <div className="flex items-end justify-between">
+                                 <div>
+                                     <span className="text-xs">Manual: </span>
+                                     <span className="font-bold">{item.manual}</span>
+                                 </div>
+                                 <div className="text-slate-400">→</div>
+                                 <div>
+                                     <span className="text-xs">Machine: </span>
+                                     <span className="font-bold text-slate-900">{item.machine}</span>
+                                 </div>
+                             </div>
+                         </div>
+                     ))}
+                 </div>
+            </Card>
         </div>
     </div>
   );
 
   const ForecastView = ({ dateInfo }) => (
     <div className="space-y-6 w-full">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold text-slate-900">Demand Projections</h2>
+          {/* Explicit Date for Forecast */}
           <div className="flex items-center gap-2 text-slate-700 text-sm mt-1">
             <Calendar className="w-4 h-4" />
             <span>Target Period: <span className="font-semibold text-slate-900">{dateInfo.rangeStr}</span></span>
@@ -644,7 +590,7 @@ const FeelMatchaDashboard = () => {
 
   const InventoryView = ({ dateInfo }) => (
     <div className="space-y-6 w-full">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div className="flex justify-between items-center">
             <div>
               <h2 className="text-2xl font-bold text-slate-900">Inventory & Par Levels</h2>
               <div className="flex items-center gap-2 text-slate-700 text-sm mt-1">
@@ -732,7 +678,7 @@ const FeelMatchaDashboard = () => {
 
   const WasteView = ({ dateInfo }) => (
     <div className="space-y-6 w-full">
-       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+       <div className="flex justify-between items-center">
             <div>
               <h2 className="text-2xl font-bold text-slate-900">Waste & Sell-Through Data</h2>
               <p className="text-slate-600">Monitoring performance for: <span className="font-semibold">{dateInfo.rangeStr}</span></p>
@@ -751,8 +697,8 @@ const FeelMatchaDashboard = () => {
                      <Target className="w-4 h-4 text-emerald-600" />
                  </div>
                  <div>
-                     <p className="text-xs text-emerald-800 font-bold uppercase tracking-wider">Optimal</p>
-                     <p className="text-sm font-medium text-slate-800">&ge; 90% Sell-Through</p>
+                     <p className="text-xs text-emerald-800 font-bold uppercase tracking-wider">High Efficiency</p>
+                     <p className="text-sm font-medium text-slate-700">&ge; 90% Sell-Through</p>
                  </div>
             </div>
             <div className="bg-amber-50 border border-amber-100 p-3 rounded-lg flex items-center gap-3">
@@ -760,8 +706,8 @@ const FeelMatchaDashboard = () => {
                      <AlertTriangle className="w-4 h-4 text-amber-600" />
                  </div>
                  <div>
-                     <p className="text-xs text-amber-800 font-bold uppercase tracking-wider">Warning</p>
-                     <p className="text-sm font-medium text-slate-800">75% - 89% Sell-Through</p>
+                     <p className="text-xs text-amber-800 font-bold uppercase tracking-wider">Moderate</p>
+                     <p className="text-sm font-medium text-slate-700">75% - 89% Sell-Through</p>
                  </div>
             </div>
             <div className="bg-rose-50 border border-rose-100 p-3 rounded-lg flex items-center gap-3">
@@ -769,8 +715,8 @@ const FeelMatchaDashboard = () => {
                      <Trash2 className="w-4 h-4 text-rose-600" />
                  </div>
                  <div>
-                     <p className="text-xs text-rose-800 font-bold uppercase tracking-wider">Critical</p>
-                     <p className="text-sm font-medium text-slate-800">&lt; 75% Sell-Through</p>
+                     <p className="text-xs text-rose-800 font-bold uppercase tracking-wider">Low Efficiency</p>
+                     <p className="text-sm font-medium text-slate-700">&lt; 75% Sell-Through</p>
                  </div>
             </div>
        </div>
@@ -856,7 +802,7 @@ const FeelMatchaDashboard = () => {
 
     return (
       <div className="space-y-6 w-full">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div className="flex justify-between items-center">
               <div>
                 <h2 className="text-2xl font-bold text-slate-900">Menu Engineering Analysis</h2>
                 <div className="flex items-center gap-2 text-slate-600 text-sm mt-1">
@@ -1052,11 +998,11 @@ const FeelMatchaDashboard = () => {
                      <Target className="w-4 h-4 text-emerald-600" />
                  </div>
                  <div className="text-2xl font-bold text-emerald-700 mt-2">12</div>
-                 <div className="text-xs text-emerald-600 mt-1">Action: Renovate/Keep</div>
+                 <div className="text-xs text-emerald-600 mt-1">Status: Stable</div>
             </Card>
             <Card className="bg-rose-50 border-rose-100">
                  <div className="flex justify-between">
-                     <span className="text-sm font-medium text-rose-800">Relocation Targets</span>
+                     <span className="text-sm font-medium text-rose-800">Underperforming</span>
                      <ArrowDownRight className="w-4 h-4 text-rose-500" />
                  </div>
                  <div className="text-2xl font-bold text-rose-700 mt-2">5</div>
@@ -1064,11 +1010,11 @@ const FeelMatchaDashboard = () => {
             </Card>
             <Card className="bg-blue-50 border-blue-100">
                  <div className="flex justify-between">
-                     <span className="text-sm font-medium text-blue-800">Potential Savings</span>
+                     <span className="text-sm font-medium text-blue-800">Margin Gap</span>
                      <DollarSign className="w-4 h-4 text-blue-600" />
                  </div>
-                 <div className="text-2xl font-bold text-blue-700 mt-2">Rp 1.2M</div>
-                 <div className="text-xs text-blue-600 mt-1">Per Month (Est.)</div>
+                 <div className="text-2xl font-bold text-blue-700 mt-2">12%</div>
+                 <div className="text-xs text-blue-600 mt-1">vs Top Performers</div>
             </Card>
         </div>
 
@@ -1121,18 +1067,24 @@ const FeelMatchaDashboard = () => {
                             </Scatter>
                         </ScatterChart>
                     </ResponsiveContainer>
-                    {/* Quadrant Labels - Updated to prevent stacking */}
-                    <div className="absolute top-4 left-16 text-rose-700 font-bold text-[10px] sm:text-xs bg-white/90 p-1 border border-rose-200 rounded shadow-sm whitespace-nowrap">
-                        High Rent / Low Rev
+                </div>
+                {/* Legend Below Chart - Replaces Absolute Labels */}
+                <div className="grid grid-cols-2 gap-2 mt-4 text-xs">
+                    <div className="p-2 bg-rose-50 border border-rose-100 rounded text-center">
+                        <span className="block font-bold text-rose-700">High Rent / Low Rev</span>
+                        <div className="w-2 h-2 rounded-full bg-rose-500 mx-auto mt-1"></div>
                     </div>
-                    <div className="absolute top-4 right-4 text-blue-700 font-bold text-[10px] sm:text-xs bg-white/90 p-1 border border-blue-200 rounded shadow-sm whitespace-nowrap">
-                        High Rent / High Rev
+                    <div className="p-2 bg-blue-50 border border-blue-100 rounded text-center">
+                        <span className="block font-bold text-blue-700">High Rent / High Rev</span>
+                        <div className="w-2 h-2 rounded-full bg-blue-500 mx-auto mt-1"></div>
                     </div>
-                    <div className="absolute bottom-12 left-16 text-amber-700 font-bold text-[10px] sm:text-xs bg-white/90 p-1 border border-amber-200 rounded shadow-sm whitespace-nowrap">
-                        Low Rent / Low Rev
+                    <div className="p-2 bg-amber-50 border border-amber-100 rounded text-center">
+                        <span className="block font-bold text-amber-700">Low Rent / Low Rev</span>
+                        <div className="w-2 h-2 rounded-full bg-amber-500 mx-auto mt-1"></div>
                     </div>
-                    <div className="absolute bottom-12 right-4 text-emerald-700 font-bold text-[10px] sm:text-xs bg-white/90 p-1 border border-emerald-200 rounded shadow-sm whitespace-nowrap">
-                        Low Rent / High Rev
+                    <div className="p-2 bg-emerald-50 border border-emerald-100 rounded text-center">
+                        <span className="block font-bold text-emerald-700">Low Rent / High Rev</span>
+                        <div className="w-2 h-2 rounded-full bg-emerald-500 mx-auto mt-1"></div>
                     </div>
                 </div>
              </Card>
