@@ -1,23 +1,23 @@
 import React, { useState, useMemo } from 'react';
 import { 
   LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, 
-  ComposedChart, ScatterChart, Scatter, ZAxis, Cell, ReferenceLine
+  ComposedChart, ScatterChart, Scatter, ZAxis, Cell, ReferenceLine, PieChart, Pie
 } from 'recharts';
 import { 
   LayoutDashboard, TrendingUp, Trash2, Utensils, Users, Settings, 
   AlertTriangle, ArrowUpRight, ArrowDownRight, Calendar, Filter, 
-  Download, Search, Info, ChefHat, DollarSign, Truck, PieChart,
-  UserCheck, ClipboardX, Clock, QrCode, Cpu, Lightbulb, Coffee, Croissant, Target, Package, Scale, Building, Menu, X
+  Download, Search, Info, ChefHat, DollarSign, Truck, 
+  UserCheck, ClipboardX, Clock, QrCode, Cpu, Lightbulb, Coffee, Croissant, Target, Package, Scale, Building, Menu, X, Wallet, Activity, Smartphone, MousePointerClick, Database
 } from 'lucide-react';
 
 // --- MOCK DATA GENERATION ---
 
-// 1. Executive Overview Data
+// 1. Executive Pulse Data
 const kpiData = [
-  { title: 'Total Forecast', value: '14,250', unit: 'Items', trend: '+5.2%', status: 'good' },
-  { title: 'COGS vs Revenue', value: '42.1%', unit: '% (High)', trend: '+3.5%', status: 'warning' }, 
-  { title: 'QR Order Adoption', value: '45%', unit: '% of Trans', trend: '+12%', status: 'good' }, 
-  { title: 'Peak Hour Traffic', value: '18:00', unit: 'Avg Peak', trend: 'Stable', status: 'neutral' }, 
+  { title: 'Net Sales (Live)', value: 'Rp 42.5M', unit: 'Today', trend: '+8.4%', status: 'good', icon: Wallet },
+  { title: 'Gross Profit', value: 'Rp 24.1M', unit: '56.7%', trend: '+2.1%', status: 'good', icon: DollarSign },
+  { title: 'COGS %', value: '43.3%', unit: 'Target <40%', trend: '+1.5%', status: 'warning', icon: Scale },
+  { title: 'Labor Cost %', value: '28.1%', unit: 'Target <25%', trend: '+3.1%', status: 'warning', icon: Users },
 ];
 
 // 2. Forecast Data
@@ -88,7 +88,7 @@ const paretoData = [
 
 // 5. Operations Data
 const techImpactData = [
-  { metric: 'Prep Time (sec)', manual: 180, machine: 90, improvement: '50% Faster' },
+  { metric: 'SPMH (Sales/Man-Hour)', manual: 150000, machine: 225000, improvement: '50% Higher Efficiency' },
   { metric: 'Error Rate (%)', manual: 4.5, machine: 0.8, improvement: '82% Less Errors' },
   { metric: 'Staff Training (Days)', manual: 14, machine: 3, improvement: 'Faster Onboarding' },
 ];
@@ -124,7 +124,7 @@ const inventoryData = [
     { id: 5, item: 'Red Bean Paste', unit: 'kg', current: 2.1, min: 2.0, max: 6.0, consumption: 0.4, status: 'Warning' },
 ];
 
-// 7. Store Audit Data (Updated: No Action/Decision)
+// 7. Store Audit Data
 const storeAuditData = [
     { name: 'Kemang', x: 850, y: 150, z: 25, type: 'Street' },
     { name: 'PIK Avenue', x: 1200, y: 450, z: 18, type: 'Mall' },
@@ -135,9 +135,29 @@ const storeAuditData = [
     { name: 'Bekasi', x: 550, y: 100, z: 24, type: 'Street' },
 ];
 
-// 8. Alerts
+// 8. CRM Data (UPDATED: Smart Order Integration)
+const retentionData = [
+  { name: 'New Customers', value: 35, fill: '#10b981' },
+  { name: 'Returning', value: 65, fill: '#3b82f6' },
+];
+
+// Comparison of Spend: Smart Order vs Manual
+const spendComparisonData = [
+    { category: 'Beverage', SmartOrder: 45000, Manual: 38000 },
+    { category: 'Food/Pastry', SmartOrder: 35000, Manual: 28000 },
+    { category: 'Add-ons', SmartOrder: 12000, Manual: 5000 },
+];
+
+const customerSegments = [
+    { type: 'Champions', count: 120, spend: 'Rp 4.5jt/mo', visit: '8x/mo' },
+    { type: 'Loyal', count: 450, spend: 'Rp 1.2jt/mo', visit: '4x/mo' },
+    { type: 'Potential', count: 800, spend: 'Rp 350rb/mo', visit: '1x/mo' },
+    { type: 'At Risk', count: 150, spend: 'Rp 200rb/mo', visit: '<1x/mo' },
+];
+
+// 9. Alerts
 const alerts = [
-  { id: 1, type: 'critical', msg: 'Strawberry Daifuku Waste > 35%' },
+  { id: 1, type: 'critical', msg: 'Outlet Bintaro: Labor Cost > 30% yesterday' }, 
   { id: 2, type: 'info', msg: 'Cuzen Machine Maintenance Scheduled' },
   { id: 3, type: 'critical', msg: 'QR Adoption at PIK Avenue < 20%' },
 ];
@@ -172,7 +192,7 @@ const Badge = ({ status, text }) => {
 const FeelMatchaDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedOutlet, setSelectedOutlet] = useState('All Network');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // New state for mobile sidebar
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
   // Date State
   const today = new Date();
@@ -203,7 +223,8 @@ const FeelMatchaDashboard = () => {
 
   // Sidebar Navigation
   const navItems = [
-    { id: 'overview', label: 'Overview', icon: LayoutDashboard },
+    { id: 'overview', label: 'Financial Pulse', icon: Activity },
+    { id: 'crm', label: 'CRM & Loyalty', icon: Users },
     { id: 'forecast', label: 'Demand Forecast', icon: TrendingUp },
     { id: 'inventory', label: 'Inventory & Par', icon: ChefHat },
     { id: 'waste', label: 'Waste Control', icon: Trash2 },
@@ -214,22 +235,15 @@ const FeelMatchaDashboard = () => {
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'overview':
-        return <OverviewView dateInfo={dateInfo} />;
-      case 'forecast':
-        return <ForecastView dateInfo={dateInfo} />;
-      case 'inventory':
-        return <InventoryView dateInfo={dateInfo} />;
-      case 'waste':
-        return <WasteView dateInfo={dateInfo} />;
-      case 'menu':
-        return <MenuAnalysisView dateInfo={dateInfo} />;
-      case 'assets':
-        return <AssetOptimizationView dateInfo={dateInfo} />;
-      case 'ops':
-        return <OperationsView dateInfo={dateInfo} />;
-      default:
-        return <OverviewView dateInfo={dateInfo} />;
+      case 'overview': return <OverviewView dateInfo={dateInfo} />;
+      case 'crm': return <CRMView dateInfo={dateInfo} />;
+      case 'forecast': return <ForecastView dateInfo={dateInfo} />;
+      case 'inventory': return <InventoryView dateInfo={dateInfo} />;
+      case 'waste': return <WasteView dateInfo={dateInfo} />;
+      case 'menu': return <MenuAnalysisView dateInfo={dateInfo} />;
+      case 'assets': return <AssetOptimizationView dateInfo={dateInfo} />;
+      case 'ops': return <OperationsView dateInfo={dateInfo} />;
+      default: return <OverviewView dateInfo={dateInfo} />;
     }
   };
 
@@ -237,41 +251,47 @@ const FeelMatchaDashboard = () => {
 
   const OverviewView = ({ dateInfo }) => (
     <div className="space-y-6 w-full">
-      {/* Title & Date Header in Content - UPDATED LAYOUT */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <div>
-            <h2 className="text-2xl font-bold text-slate-900">Overview</h2>
-            <p className="text-slate-500 text-sm mt-1">Snapshot of network performance</p>
+            <h2 className="text-2xl font-bold text-slate-900">Financial Pulse (Real-Time)</h2>
+            <p className="text-slate-500 text-sm mt-1">Live visibility of Net Sales, Gross Profit, and Cost Drivers.</p>
         </div>
         <div className="flex items-center gap-2 text-slate-700 bg-white px-3 py-2 rounded-lg border border-slate-200 shadow-sm">
             <Clock className="w-4 h-4 text-emerald-600" />
-            <span className="text-sm font-medium">Period: <span className="text-slate-900 font-bold">{dateInfo.rangeStr}</span></span>
+            <span className="text-sm font-medium">Data: <span className="text-slate-900 font-bold">LIVE / Today</span></span>
         </div>
       </div>
 
-      {/* KPI Row */}
+      {/* KPI Row (Updated for Financial Pulse) */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {kpiData.map((kpi, idx) => (
-          <Card key={idx}>
-            <div className="flex justify-between items-start mb-2">
-              <span className="text-slate-700 text-sm font-medium">{kpi.title}</span>
-              {kpi.status === 'good' ? <ArrowUpRight className="w-4 h-4 text-emerald-600" /> : 
-               kpi.status === 'warning' ? <ArrowUpRight className="w-4 h-4 text-rose-600" /> :
-               <ArrowDownRight className="w-4 h-4 text-slate-500" />}
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-slate-900">{kpi.value}</span>
-              <span className="text-xs text-slate-600">{kpi.unit}</span>
-            </div>
-            <div className={`text-xs mt-2 font-medium ${kpi.trend === 'Stable' ? 'text-blue-700' : kpi.trend.startsWith('+') ? 'text-emerald-700' : 'text-rose-700'}`}>
-              {kpi.trend} <span className="text-slate-600 font-normal">vs prev period</span>
-            </div>
-          </Card>
-        ))}
+        {kpiData.map((kpi, idx) => {
+            const Icon = kpi.icon;
+            return (
+              <Card key={idx}>
+                <div className="flex justify-between items-start mb-2">
+                  <div className="flex items-center gap-2">
+                     <div className={`p-1.5 rounded-lg ${kpi.title.includes('Net') ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-600'}`}>
+                        <Icon className="w-4 h-4" />
+                     </div>
+                     <span className="text-slate-700 text-sm font-medium">{kpi.title}</span>
+                  </div>
+                  {kpi.status === 'good' ? <ArrowUpRight className="w-4 h-4 text-emerald-600" /> : 
+                   kpi.status === 'warning' ? <ArrowUpRight className="w-4 h-4 text-rose-600" /> :
+                   <ArrowDownRight className="w-4 h-4 text-slate-500" />}
+                </div>
+                <div className="flex items-baseline gap-2 mt-2">
+                  <span className="text-2xl font-bold text-slate-900">{kpi.value}</span>
+                  <span className="text-xs text-slate-600">{kpi.unit}</span>
+                </div>
+                <div className={`text-xs mt-2 font-medium ${kpi.trend === 'Stable' ? 'text-blue-700' : kpi.trend.startsWith('+') && kpi.status === 'good' ? 'text-emerald-700' : 'text-rose-700'}`}>
+                  {kpi.trend} <span className="text-slate-600 font-normal">vs last period</span>
+                </div>
+              </Card>
+            );
+        })}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Chart: Forecast vs Actual */}
         <div className="lg:col-span-2">
           <Card className="h-full">
             <div className="flex justify-between items-center mb-6">
@@ -292,7 +312,6 @@ const FeelMatchaDashboard = () => {
                   <Tooltip 
                     contentStyle={{ backgroundColor: '#fff', borderRadius: '8px', border: '1px solid #e2e8f0', color: '#1e293b' }}
                     itemStyle={{ color: '#334155' }}
-                    formatter={(value, name) => [value, name === 'forecast' ? 'Forecast Demand' : name === 'actual' ? 'Actual Sales' : name]}
                   />
                   <Legend wrapperStyle={{ color: '#334155' }} />
                   <Area type="monotone" dataKey="upper" stroke="none" fill="#f1f5f9" name="Confidence Interval" />
@@ -305,7 +324,6 @@ const FeelMatchaDashboard = () => {
           </Card>
         </div>
 
-        {/* Action Panel / Alerts */}
         <Card>
           <div className="flex justify-between items-center mb-4">
             <h3 className="font-bold text-slate-900 flex items-center gap-2">
@@ -326,28 +344,222 @@ const FeelMatchaDashboard = () => {
           </div>
         </Card>
       </div>
+    </div>
+  );
 
-      {/* Channel Split */}
-      <Card>
-        <div className="mb-4">
-            <h3 className="text-lg font-bold text-slate-900">Demand by Channel Forecast</h3>
-            <p className="text-sm text-slate-700">Projected channel split</p>
+  const CRMView = ({ dateInfo }) => (
+    <div className="space-y-6 w-full">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+              <h2 className="text-2xl font-bold text-slate-900">CRM & Smart Order Loyalty</h2>
+              <div className="flex items-center gap-2 text-slate-600 text-sm mt-1">
+                <span>Integrated with <span className="font-bold text-emerald-600">Feel Matcha Smart Order</span> (In-store Web)</span>
+              </div>
+            </div>
+            <div className="flex gap-2">
+                 <button className="px-4 py-2 bg-slate-900 text-white text-sm rounded-lg flex items-center gap-2">
+                    <Download className="w-4 h-4" /> Export Data
+                 </button>
+            </div>
         </div>
-        <div className="h-64 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={channelSplitData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="name" tickLine={false} axisLine={false} tick={{fill: '#334155'}} />
-              <YAxis tickLine={false} axisLine={false} tick={{fill: '#334155'}} />
-              <Tooltip cursor={{fill: '#f8fafc'}} contentStyle={{ color: '#1e293b' }} />
-              <Legend wrapperStyle={{ color: '#334155' }} />
-              <Bar dataKey="DineIn" stackId="a" fill="#10b981" name="Dine-in" radius={[0, 0, 4, 4]} />
-              <Bar dataKey="Delivery" stackId="a" fill="#3b82f6" name="Delivery (Grab/Go)" />
-              <Bar dataKey="CloudKitchen" stackId="a" fill="#f59e0b" name="Cloud Kitchen" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+
+        {/* Smart Order Performance KPIs */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+            <Card className="bg-white border-slate-200">
+                <div className="flex justify-between items-start">
+                    <div>
+                        <p className="text-sm font-medium text-slate-500">Smart Order Adoption</p>
+                        <h4 className="text-2xl font-bold text-slate-900 mt-1">72%</h4>
+                        <p className="text-xs text-emerald-600 mt-1 flex items-center gap-1">
+                            <Smartphone className="w-3 h-3" /> of Total Dine-in
+                        </p>
+                    </div>
+                </div>
+            </Card>
+            <Card className="bg-white border-slate-200">
+                <div className="flex justify-between items-start">
+                    <div>
+                        <p className="text-sm font-medium text-slate-500">Customer Data Capture</p>
+                        <h4 className="text-2xl font-bold text-slate-900 mt-1">94%</h4>
+                        <p className="text-xs text-blue-600 mt-1 flex items-center gap-1">
+                            <Database className="w-3 h-3" /> Linked to Phone/WA
+                        </p>
+                    </div>
+                </div>
+            </Card>
+            <Card className="bg-white border-slate-200">
+                <div className="flex justify-between items-start">
+                    <div>
+                        <p className="text-sm font-medium text-slate-500">Avg Ticket Uplift</p>
+                        <h4 className="text-2xl font-bold text-slate-900 mt-1">+18%</h4>
+                        <p className="text-xs text-emerald-600 mt-1 flex items-center gap-1">
+                            <TrendingUp className="w-3 h-3" /> vs Manual Cashier
+                        </p>
+                    </div>
+                </div>
+            </Card>
         </div>
-      </Card>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
+             {/* Retention Chart */}
+             <Card>
+                <div className="flex justify-between items-center mb-4">
+                     <h3 className="font-bold text-slate-900">Customer Retention Rate</h3>
+                </div>
+                <div className="h-64 w-full flex items-center justify-center">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                            <Pie
+                                data={retentionData}
+                                cx="50%"
+                                cy="50%"
+                                innerRadius={60}
+                                outerRadius={80}
+                                paddingAngle={5}
+                                dataKey="value"
+                            >
+                                {retentionData.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                                ))}
+                            </Pie>
+                            <Tooltip />
+                            <Legend verticalAlign="bottom" height={36}/>
+                        </PieChart>
+                    </ResponsiveContainer>
+                </div>
+                <div className="text-center text-sm text-slate-600 mt-2">
+                    Returning customers via Smart Order contribute <strong>65%</strong> of revenue.
+                </div>
+             </Card>
+
+             {/* Spend Comparison Chart */}
+             <Card>
+                <div className="flex justify-between items-center mb-4">
+                     <h3 className="font-bold text-slate-900">Spend Analysis: Smart Order vs Manual</h3>
+                     <Badge status="good" text="Smart Order Higher" />
+                </div>
+                <div className="h-64 w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={spendComparisonData} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                            <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+                            <XAxis type="number" tick={{fill: '#334155'}} />
+                            <YAxis dataKey="category" type="category" width={100} tick={{fontSize: 12, fill: '#334155'}} />
+                            <Tooltip cursor={{fill: '#f1f5f9'}} contentStyle={{ color: '#1e293b' }} />
+                            <Legend wrapperStyle={{ color: '#334155' }} />
+                            <Bar dataKey="SmartOrder" fill="#10b981" name="Smart Order (Web)" radius={[0, 4, 4, 0]} />
+                            <Bar dataKey="Manual" fill="#94a3b8" name="Manual (Cashier)" radius={[0, 4, 4, 0]} />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
+                <div className="text-xs text-slate-500 mt-2 text-center">
+                    Smart Order UI drives higher add-on sales (toppings, upsize) through visual prompts.
+                </div>
+             </Card>
+        </div>
+
+         {/* Customer Segments Table */}
+         <Card>
+            <h3 className="font-bold text-slate-900 mb-4">Customer Segments (RFM from Smart Order Data)</h3>
+            <div className="overflow-x-auto">
+                <table className="w-full text-sm text-left">
+                    <thead className="bg-slate-100 text-slate-800 font-bold border-b border-slate-200">
+                        <tr>
+                            <th className="px-4 py-3">Segment</th>
+                            <th className="px-4 py-3">Users</th>
+                            <th className="px-4 py-3">Avg Spend</th>
+                            <th className="px-4 py-3">Freq</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                        {customerSegments.map((seg, idx) => (
+                            <tr key={idx} className="hover:bg-slate-50">
+                                <td className="px-4 py-3 font-medium text-slate-800">{seg.type}</td>
+                                <td className="px-4 py-3 text-slate-600">{seg.count}</td>
+                                <td className="px-4 py-3 text-slate-900 font-bold">{seg.spend}</td>
+                                <td className="px-4 py-3 text-slate-600">{seg.visit}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+         </Card>
+    </div>
+  );
+
+  const OperationsView = ({ dateInfo }) => (
+    <div className="space-y-6 w-full">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+              <h2 className="text-2xl font-bold text-slate-900">Workforce & Operations Intelligence</h2>
+              <div className="flex items-center gap-2 text-slate-600 text-sm mt-1">
+                <span>Measuring Labor Efficiency (SPMH) & Tech ROI</span>
+              </div>
+            </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+             {techImpactData.map((item, idx) => (
+                 <Card key={idx} className="bg-white border-slate-200">
+                     <h4 className="text-slate-600 text-xs uppercase font-bold tracking-wider">{item.metric}</h4>
+                     <div className="flex items-end gap-2 mt-2">
+                         <span className="text-3xl font-bold text-slate-900">{item.machine}</span>
+                         <span className="text-sm text-emerald-600 mb-1">({item.improvement})</span>
+                     </div>
+                     <div className="text-xs text-slate-500 mt-1">vs Manual: {item.manual}</div>
+                 </Card>
+             ))}
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
+            <Card>
+                <div className="flex justify-between mb-4">
+                    <h3 className="font-bold text-slate-800 flex items-center gap-2">
+                        <Users className="w-5 h-5 text-blue-500" /> Hourly Labor Heatmap (Traffic)
+                    </h3>
+                    <Badge status="info" text="Labor Planning" />
+                </div>
+                <div className="h-64 w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={hourlyTrafficData} margin={{ top: 20, right: 30, left: 10, bottom: 5 }}>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                            <XAxis dataKey="time" tick={{fontSize: 12, fill: '#334155'}} />
+                            <YAxis tick={{fontSize: 12, fill: '#334155'}} />
+                            <Tooltip contentStyle={{ color: '#1e293b' }} />
+                            <Legend wrapperStyle={{ color: '#334155' }} />
+                            <Line type="monotone" dataKey="Kemang" stroke="#10b981" strokeWidth={2} dot={false} />
+                            <Line type="monotone" dataKey="PIK" stroke="#3b82f6" strokeWidth={2} dot={false} />
+                            <Line type="monotone" dataKey="Bintaro" stroke="#f59e0b" strokeWidth={2} dot={false} />
+                        </LineChart>
+                    </ResponsiveContainer>
+                </div>
+                <div className="mt-2 text-sm text-slate-700 bg-slate-50 p-2 rounded">
+                    <strong>Insight:</strong> Peak demand consistently occurs at 12:00 and 18:00. Schedule partial shifts here.
+                </div>
+            </Card>
+
+            <Card>
+                <div className="flex justify-between mb-4">
+                    <h3 className="font-bold text-slate-800 flex items-center gap-2">
+                        <QrCode className="w-5 h-5 text-purple-500" /> Error Rate Analysis
+                    </h3>
+                    <Badge status="good" text="Impact: Positive" />
+                </div>
+                <div className="h-64 w-full">
+                     <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={errorSourceData} layout="vertical" margin={{left: 20}}>
+                            <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+                            <XAxis type="number" tick={{fill: '#334155'}} />
+                            <YAxis dataKey="source" type="category" width={140} tick={{fontSize: 12, fill: '#334155'}} />
+                            <Tooltip cursor={{fill: '#f1f5f9'}} contentStyle={{ color: '#1e293b' }} />
+                            <Bar dataKey="count" fill="#f43f5e" radius={[0, 4, 4, 0]} barSize={20} name="Errors Count" />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
+                <div className="mt-2 text-sm text-slate-700 bg-slate-50 p-2 rounded">
+                    <strong>Observation:</strong> Manual entry errors remain significantly higher compared to QR ordering channels.
+                </div>
+            </Card>
+        </div>
     </div>
   );
 
@@ -460,7 +672,7 @@ const FeelMatchaDashboard = () => {
                      <span className="text-sm font-medium text-rose-800">Low Stock Items</span>
                      <AlertTriangle className="w-4 h-4 text-rose-600" />
                  </div>
-                 <div className="text-2xl font-bold text-rose-800 mt-2">3 Items</div>
+                 <div className="text-2xl font-bold text-rose-700 mt-2">3 Items</div>
                  <div className="text-xs text-rose-700 mt-1">Action needed today</div>
              </Card>
              <Card className="bg-slate-50 border-slate-200">
@@ -909,24 +1121,18 @@ const FeelMatchaDashboard = () => {
                             </Scatter>
                         </ScatterChart>
                     </ResponsiveContainer>
-                </div>
-                {/* Legend Below Chart - Replaces Absolute Labels */}
-                <div className="grid grid-cols-2 gap-2 mt-4 text-xs">
-                    <div className="p-2 bg-rose-50 border border-rose-100 rounded text-center">
-                        <span className="block font-bold text-rose-700">High Rent / Low Rev</span>
-                        <div className="w-2 h-2 rounded-full bg-rose-500 mx-auto mt-1"></div>
+                    {/* Quadrant Labels - Updated to prevent stacking */}
+                    <div className="absolute top-4 left-16 text-rose-700 font-bold text-[10px] sm:text-xs bg-white/90 p-1 border border-rose-200 rounded shadow-sm whitespace-nowrap">
+                        High Rent / Low Rev
                     </div>
-                    <div className="p-2 bg-blue-50 border border-blue-100 rounded text-center">
-                        <span className="block font-bold text-blue-700">High Rent / High Rev</span>
-                        <div className="w-2 h-2 rounded-full bg-blue-500 mx-auto mt-1"></div>
+                    <div className="absolute top-4 right-4 text-blue-700 font-bold text-[10px] sm:text-xs bg-white/90 p-1 border border-blue-200 rounded shadow-sm whitespace-nowrap">
+                        High Rent / High Rev
                     </div>
-                    <div className="p-2 bg-amber-50 border border-amber-100 rounded text-center">
-                        <span className="block font-bold text-amber-700">Low Rent / Low Rev</span>
-                        <div className="w-2 h-2 rounded-full bg-amber-500 mx-auto mt-1"></div>
+                    <div className="absolute bottom-12 left-16 text-amber-700 font-bold text-[10px] sm:text-xs bg-white/90 p-1 border border-amber-200 rounded shadow-sm whitespace-nowrap">
+                        Low Rent / Low Rev
                     </div>
-                    <div className="p-2 bg-emerald-50 border border-emerald-100 rounded text-center">
-                        <span className="block font-bold text-emerald-700">Low Rent / High Rev</span>
-                        <div className="w-2 h-2 rounded-full bg-emerald-500 mx-auto mt-1"></div>
+                    <div className="absolute bottom-12 right-4 text-emerald-700 font-bold text-[10px] sm:text-xs bg-white/90 p-1 border border-emerald-200 rounded shadow-sm whitespace-nowrap">
+                        Low Rent / High Rev
                     </div>
                 </div>
              </Card>
@@ -965,84 +1171,6 @@ const FeelMatchaDashboard = () => {
                     </table>
                 </div>
              </Card>
-        </div>
-    </div>
-  );
-
-  const OperationsView = ({ dateInfo }) => (
-    <div className="space-y-6 w-full">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div>
-              <h2 className="text-2xl font-bold text-slate-900">Tech & Ops Impact Analysis</h2>
-              <div className="flex items-center gap-2 text-slate-600 text-sm mt-1">
-                <span>Measuring ROI on Technology • <span className="font-semibold text-slate-800">Data Updated: {dateInfo.endStr}</span></span>
-              </div>
-            </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
-             {techImpactData.map((item, idx) => (
-                 <Card key={idx} className="bg-white border-slate-200">
-                     <h4 className="text-slate-600 text-xs uppercase font-bold tracking-wider">{item.metric}</h4>
-                     <div className="flex items-end gap-2 mt-2">
-                         <span className="text-3xl font-bold text-slate-900">{item.machine}</span>
-                         <span className="text-sm text-emerald-600 mb-1">({item.improvement})</span>
-                     </div>
-                     <div className="text-xs text-slate-500 mt-1">vs Manual: {item.manual}</div>
-                 </Card>
-             ))}
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
-            {/* Tech Impact Cards */}
-            <Card>
-                <div className="flex justify-between mb-4">
-                    <h3 className="font-bold text-slate-800 flex items-center gap-2">
-                        <QrCode className="w-5 h-5 text-purple-500" /> Error Rate Analysis (Validation)
-                    </h3>
-                    <Badge status="good" text="Impact: Positive" />
-                </div>
-                <div className="h-64 w-full">
-                     <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={errorSourceData} layout="vertical" margin={{left: 20}}>
-                            <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-                            <XAxis type="number" tick={{fill: '#334155'}} />
-                            <YAxis dataKey="source" type="category" width={140} tick={{fontSize: 12, fill: '#334155'}} />
-                            <Tooltip cursor={{fill: '#f1f5f9'}} contentStyle={{ color: '#1e293b' }} />
-                            <Bar dataKey="count" fill="#f43f5e" radius={[0, 4, 4, 0]} barSize={20} name="Errors Count" />
-                        </BarChart>
-                    </ResponsiveContainer>
-                </div>
-                <div className="mt-2 text-sm text-slate-700 bg-slate-50 p-2 rounded">
-                    <strong>Observation:</strong> Manual entry errors remain significantly higher compared to QR ordering channels.
-                </div>
-            </Card>
-
-            <Card>
-                <div className="flex justify-between mb-4">
-                    <h3 className="font-bold text-slate-800 flex items-center gap-2">
-                        <Users className="w-5 h-5 text-blue-500" /> Hourly Traffic Analysis
-                    </h3>
-                    <Badge status="info" text="Labor Planning Enabler" />
-                </div>
-                <div className="h-64 w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={hourlyTrafficData} margin={{ top: 20, right: 30, left: 10, bottom: 5 }}>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                            <XAxis dataKey="time" tick={{fontSize: 12, fill: '#334155'}} />
-                            <YAxis tick={{fontSize: 12, fill: '#334155'}} />
-                            <Tooltip contentStyle={{ color: '#1e293b' }} />
-                            <Legend wrapperStyle={{ color: '#334155' }} />
-                            <Line type="monotone" dataKey="Kemang" stroke="#10b981" strokeWidth={2} dot={false} />
-                            <Line type="monotone" dataKey="PIK" stroke="#3b82f6" strokeWidth={2} dot={false} />
-                            <Line type="monotone" dataKey="Bintaro" stroke="#f59e0b" strokeWidth={2} dot={false} />
-                        </LineChart>
-                    </ResponsiveContainer>
-                </div>
-                <div className="mt-2 text-sm text-slate-700 bg-slate-50 p-2 rounded">
-                    <strong>Insight:</strong> Peak demand consistently occurs at 12:00 and 18:00 across major outlets.
-                </div>
-            </Card>
         </div>
     </div>
   );
