@@ -1,13 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { 
   LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, 
-  ComposedChart, ScatterChart, Scatter, ZAxis, Cell, ReferenceLine, PieChart, Pie
+  ComposedChart, ScatterChart, Scatter, ZAxis, Cell, ReferenceLine, PieChart, Pie, Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis
 } from 'recharts';
 import { 
   LayoutDashboard, TrendingUp, Trash2, Utensils, Users, Settings, 
   AlertTriangle, ArrowUpRight, ArrowDownRight, Calendar, Filter, 
   Download, Search, Info, ChefHat, DollarSign, Truck, PieChart as IconPieChart,
-  UserCheck, ClipboardX, Clock, QrCode, Cpu, Lightbulb, Coffee, Croissant, Target, Package, Scale, Building, Menu, X, Wallet, Activity, Smartphone, Database
+  UserCheck, ClipboardX, Clock, QrCode, Cpu, Lightbulb, Coffee, Croissant, Target, Package, Scale, Building, Menu, X, Wallet, Activity, Smartphone, Database, FlaskConical, MessageSquare, ThumbsUp
 } from 'lucide-react';
 
 // --- MOCK DATA GENERATION ---
@@ -106,6 +106,21 @@ const errorSourceData = [
   { source: 'Machine Calibration', count: 2 }, 
 ];
 
+const hourlyTrafficData = [
+  { time: '10:00', Kemang: 45, PIK: 30, Bintaro: 25 },
+  { time: '11:00', Kemang: 60, PIK: 45, Bintaro: 35 },
+  { time: '12:00', Kemang: 120, PIK: 90, Bintaro: 80 }, // Lunch Peak
+  { time: '13:00', Kemang: 100, PIK: 85, Bintaro: 70 },
+  { time: '14:00', Kemang: 50, PIK: 40, Bintaro: 30 },
+  { time: '15:00', Kemang: 55, PIK: 45, Bintaro: 35 },
+  { time: '16:00', Kemang: 70, PIK: 60, Bintaro: 50 },
+  { time: '17:00', Kemang: 90, PIK: 80, Bintaro: 60 },
+  { time: '18:00', Kemang: 110, PIK: 120, Bintaro: 90 }, // Dinner/After work Peak
+  { time: '19:00', Kemang: 95, PIK: 110, Bintaro: 85 },
+  { time: '20:00', Kemang: 70, PIK: 80, Bintaro: 60 },
+  { time: '21:00', Kemang: 40, PIK: 50, Bintaro: 30 },
+];
+
 // 6. Inventory Data
 const inventoryData = [
     { id: 1, item: 'Ceremonial Matcha', unit: 'kg', current: 4.2, min: 2.0, max: 5.0, consumption: 0.5, status: 'Optimal' },
@@ -115,7 +130,7 @@ const inventoryData = [
     { id: 5, item: 'Red Bean Paste', unit: 'kg', current: 2.1, min: 2.0, max: 6.0, consumption: 0.4, status: 'Warning' },
 ];
 
-// 7. Store Audit Data (Asset Optimization)
+// 7. Store Audit Data
 const storeAuditData = [
     { name: 'Kemang', x: 850, y: 150, z: 25, type: 'Street' },
     { name: 'PIK Avenue', x: 1200, y: 450, z: 18, type: 'Mall' },
@@ -126,7 +141,7 @@ const storeAuditData = [
     { name: 'Bekasi', x: 550, y: 100, z: 24, type: 'Street' },
 ];
 
-// 8. CRM Data (Customer Data)
+// 8. CRM Data
 const retentionData = [
   { name: 'New Customers', value: 35, fill: '#10b981' },
   { name: 'Returning', value: 65, fill: '#3b82f6' },
@@ -139,11 +154,75 @@ const customerSegments = [
     { type: 'At Risk', count: 150, spend: 'Rp 200rb/mo', visit: '<1x/mo' },
 ];
 
-// 9. Alerts (Observations Only)
+// 9. R&D Feedback Data
+const rdMenus = [
+    { id: 1, name: 'Matcha Rose Latte (Oct Test)' },
+    { id: 2, name: 'Hojicha Tiramisu (Nov Test)' },
+    { id: 3, name: 'Genmaicha Soft Serve (Dec Test)' }
+];
+
+const rdStats = {
+    'Matcha Rose Latte (Oct Test)': { 
+        rating: 4.2, 
+        approval: 78, 
+        sentiment: 65, 
+        total: 145,
+        attributes: [
+            { subject: 'Sweetness', A: 85, fullMark: 100 },
+            { subject: 'Aroma', A: 90, fullMark: 100 },
+            { subject: 'Texture', A: 60, fullMark: 100 }, // Issue here
+            { subject: 'Appearance', A: 95, fullMark: 100 },
+            { subject: 'Price', A: 70, fullMark: 100 },
+        ],
+        comments: [
+            { user: 'Customer #882', text: 'Wanginya enak banget, tapi agak terlalu cair.', sentiment: 'neutral' },
+            { user: 'Customer #104', text: 'Best matcha ever! Rose-nya berasa premium.', sentiment: 'positive' },
+            { user: 'Customer #551', text: 'Sedikit kemanisan buat saya.', sentiment: 'negative' },
+            { user: 'Customer #332', text: 'Rasanya unik, boleh lah.', sentiment: 'neutral' },
+            { user: 'Customer #991', text: 'Kemahalan untuk ukuran segini.', sentiment: 'negative' },
+        ]
+    },
+    'Hojicha Tiramisu (Nov Test)': { 
+        rating: 4.6, 
+        approval: 92, 
+        sentiment: 88, 
+        total: 210,
+        attributes: [
+            { subject: 'Sweetness', A: 90, fullMark: 100 },
+            { subject: 'Aroma', A: 85, fullMark: 100 },
+            { subject: 'Texture', A: 95, fullMark: 100 }, 
+            { subject: 'Appearance', A: 90, fullMark: 100 },
+            { subject: 'Price', A: 80, fullMark: 100 },
+        ],
+         comments: [
+            { user: 'Customer #991', text: 'Perfect balance of bitter and sweet.', sentiment: 'positive' },
+            { user: 'Customer #223', text: 'Enak banget woy!', sentiment: 'positive' },
+        ]
+    },
+    'Genmaicha Soft Serve (Dec Test)': { 
+        rating: 3.8, 
+        approval: 60, 
+        sentiment: 40, 
+        total: 98,
+        attributes: [
+            { subject: 'Sweetness', A: 60, fullMark: 100 },
+            { subject: 'Aroma', A: 70, fullMark: 100 },
+            { subject: 'Texture', A: 50, fullMark: 100 }, // Melts too fast?
+            { subject: 'Appearance', A: 80, fullMark: 100 },
+            { subject: 'Price', A: 60, fullMark: 100 },
+        ],
+         comments: [
+            { user: 'Customer #112', text: 'Cepat meleleh, rasa genmaicha kurang nendang.', sentiment: 'negative' },
+            { user: 'Customer #334', text: 'Unik rasanya, tapi tekstur agak kasar.', sentiment: 'neutral' },
+        ]
+    }
+};
+
+// 10. Alerts
 const alerts = [
   { id: 1, type: 'critical', msg: 'Outlet Bintaro: Labor Cost > 30% yesterday' }, 
-  { id: 2, type: 'info', msg: 'Inventory: Fresh Milk below par level' },
-  { id: 3, type: 'critical', msg: 'Waste: Strawberry Daifuku Sell-Through < 60%' },
+  { id: 2, type: 'info', msg: 'Cuzen Machine Maintenance Scheduled' },
+  { id: 3, type: 'critical', msg: 'Strawberry Daifuku Waste > 35%' },
 ];
 
 // --- COMPONENTS ---
@@ -167,6 +246,8 @@ const Badge = ({ status, text }) => {
     'high efficiency': 'bg-emerald-100 text-emerald-800',
     'moderate': 'bg-amber-100 text-amber-800',
     'low efficiency': 'bg-rose-100 text-rose-800',
+    'positive': 'bg-emerald-50 text-emerald-700 border border-emerald-200',
+    'negative': 'bg-rose-50 text-rose-700 border border-rose-200',
   };
   const statusLower = status ? status.toLowerCase() : 'neutral';
   const colorClass = colors[statusLower] || colors.neutral;
@@ -216,6 +297,7 @@ const FeelMatchaDashboard = () => {
     { id: 'inventory', label: 'Inventory & Par', icon: ChefHat },
     { id: 'waste', label: 'Waste Control', icon: Trash2 },
     { id: 'menu', label: 'Menu Engineering', icon: Utensils },
+    { id: 'rd', label: 'R&D Feedback Lab', icon: FlaskConical }, // NEW TAB
     { id: 'assets', label: 'Store Portfolio', icon: Building },
     { id: 'ops', label: 'Workforce Intel', icon: Cpu },
   ];
@@ -228,6 +310,7 @@ const FeelMatchaDashboard = () => {
       case 'inventory': return <InventoryView dateInfo={dateInfo} />;
       case 'waste': return <WasteView dateInfo={dateInfo} />;
       case 'menu': return <MenuAnalysisView dateInfo={dateInfo} />;
+      case 'rd': return <RDFeedbackView dateInfo={dateInfo} />;
       case 'assets': return <AssetOptimizationView dateInfo={dateInfo} />;
       case 'ops': return <OperationsView dateInfo={dateInfo} />;
       default: return <OverviewView dateInfo={dateInfo} />;
@@ -412,6 +495,142 @@ const FeelMatchaDashboard = () => {
     </div>
   );
 
+  const RDFeedbackView = ({ dateInfo }) => {
+    const [selectedMenu, setSelectedMenu] = useState(rdMenus[0].name);
+    const [feedbackFilter, setFeedbackFilter] = useState('all'); // NEW filter state
+    const data = rdStats[selectedMenu];
+
+    const filteredComments = useMemo(() => {
+        return data.comments.filter(c => {
+            if (feedbackFilter === 'all') return true;
+            if (feedbackFilter === 'positive') return c.sentiment === 'positive';
+            if (feedbackFilter === 'negative') return c.sentiment === 'negative'; // Maps to Constructive
+            return true;
+        });
+    }, [data, feedbackFilter]);
+
+    return (
+        <div className="space-y-6 w-full">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                  <h2 className="text-2xl font-bold text-slate-900">R&D Feedback Lab</h2>
+                  <div className="flex items-center gap-2 text-slate-600 text-sm mt-1">
+                    <span>Voice of Customer from <span className="font-bold text-emerald-600">Smart Order QR</span></span>
+                  </div>
+                </div>
+                <div className="relative group min-w-[250px]">
+                    <div className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 cursor-pointer shadow-sm">
+                        <Filter className="w-4 h-4 text-slate-500" />
+                        <select 
+                            value={selectedMenu} 
+                            onChange={(e) => setSelectedMenu(e.target.value)}
+                            className="bg-transparent border-none outline-none w-full cursor-pointer appearance-none"
+                        >
+                            {rdMenus.map((menu) => (
+                                <option key={menu.id} value={menu.name}>{menu.name}</option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            {/* Top KPIs */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+                <Card className="bg-white border-slate-200">
+                    <p className="text-sm font-medium text-slate-500">Average Rating</p>
+                    <div className="flex items-baseline gap-2 mt-1">
+                        <span className="text-3xl font-bold text-slate-900">{data.rating}</span>
+                        <span className="text-sm text-slate-400">/ 5.0</span>
+                    </div>
+                </Card>
+                <Card className="bg-white border-slate-200">
+                    <p className="text-sm font-medium text-slate-500">Reorder Intention</p>
+                    <div className="flex items-baseline gap-2 mt-1">
+                        <span className="text-3xl font-bold text-emerald-600">{data.approval}%</span>
+                        <span className="text-sm text-slate-400">said "Yes"</span>
+                    </div>
+                </Card>
+                <Card className="bg-white border-slate-200">
+                    <p className="text-sm font-medium text-slate-500">Feedback Volume</p>
+                    <div className="flex items-baseline gap-2 mt-1">
+                        <span className="text-3xl font-bold text-blue-600">{data.total}</span>
+                        <span className="text-sm text-slate-400">Responses</span>
+                    </div>
+                </Card>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
+                {/* Attribute Radar Chart */}
+                <Card>
+                    <div className="flex justify-between mb-4">
+                        <h3 className="font-bold text-slate-800">Attribute Analysis</h3>
+                        <Badge status="info" text="Sensory Profile" />
+                    </div>
+                    <div className="h-[300px] w-full flex justify-center">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data.attributes}>
+                                <PolarGrid stroke="#e2e8f0" />
+                                <PolarAngleAxis dataKey="subject" tick={{ fill: '#475569', fontSize: 12 }} />
+                                <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
+                                <Radar name="Score" dataKey="A" stroke="#10b981" fill="#10b981" fillOpacity={0.4} />
+                                <Tooltip />
+                            </RadarChart>
+                        </ResponsiveContainer>
+                    </div>
+                </Card>
+
+                {/* Feedback List with Active Filters */}
+                <Card>
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
+                        <h3 className="font-bold text-slate-800">Customer Comments</h3>
+                        <div className="flex gap-2">
+                            <button
+                                onClick={() => setFeedbackFilter('all')}
+                                className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${feedbackFilter === 'all' ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
+                            >
+                                All
+                            </button>
+                            <button
+                                onClick={() => setFeedbackFilter('positive')}
+                                className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${feedbackFilter === 'positive' ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
+                            >
+                                Positive
+                            </button>
+                            <button
+                                onClick={() => setFeedbackFilter('negative')}
+                                className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${feedbackFilter === 'negative' ? 'bg-rose-100 text-rose-800 border-rose-200' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
+                            >
+                                Constructive
+                            </button>
+                        </div>
+                    </div>
+                    <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2">
+                        {filteredComments.length > 0 ? (
+                            filteredComments.map((comment, idx) => (
+                                <div key={idx} className="p-3 bg-slate-50 rounded-lg border border-slate-100">
+                                    <div className="flex justify-between items-center mb-1">
+                                        <span className="text-xs font-bold text-slate-600">{comment.user}</span>
+                                        {comment.sentiment === 'positive' ? (
+                                            <ThumbsUp className="w-3 h-3 text-emerald-500" />
+                                        ) : comment.sentiment === 'negative' ? (
+                                            <AlertTriangle className="w-3 h-3 text-rose-500" />
+                                        ) : (
+                                            <MessageSquare className="w-3 h-3 text-slate-400" />
+                                        )}
+                                    </div>
+                                    <p className="text-sm text-slate-700 italic">"{comment.text}"</p>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="text-center py-8 text-slate-400 text-sm">No comments found for this filter.</div>
+                        )}
+                    </div>
+                </Card>
+            </div>
+        </div>
+    );
+  };
+
   const OperationsView = ({ dateInfo }) => (
     <div className="space-y-6 w-full">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -510,10 +729,9 @@ const FeelMatchaDashboard = () => {
 
   const ForecastView = ({ dateInfo }) => (
     <div className="space-y-6 w-full">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h2 className="text-2xl font-bold text-slate-900">Demand Projections</h2>
-          {/* Explicit Date for Forecast */}
           <div className="flex items-center gap-2 text-slate-700 text-sm mt-1">
             <Calendar className="w-4 h-4" />
             <span>Target Period: <span className="font-semibold text-slate-900">{dateInfo.rangeStr}</span></span>
@@ -590,7 +808,7 @@ const FeelMatchaDashboard = () => {
 
   const InventoryView = ({ dateInfo }) => (
     <div className="space-y-6 w-full">
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
               <h2 className="text-2xl font-bold text-slate-900">Inventory & Par Levels</h2>
               <div className="flex items-center gap-2 text-slate-700 text-sm mt-1">
@@ -678,7 +896,7 @@ const FeelMatchaDashboard = () => {
 
   const WasteView = ({ dateInfo }) => (
     <div className="space-y-6 w-full">
-       <div className="flex justify-between items-center">
+       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
               <h2 className="text-2xl font-bold text-slate-900">Waste & Sell-Through Data</h2>
               <p className="text-slate-600">Monitoring performance for: <span className="font-semibold">{dateInfo.rangeStr}</span></p>
@@ -802,7 +1020,7 @@ const FeelMatchaDashboard = () => {
 
     return (
       <div className="space-y-6 w-full">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
               <div>
                 <h2 className="text-2xl font-bold text-slate-900">Menu Engineering Analysis</h2>
                 <div className="flex items-center gap-2 text-slate-600 text-sm mt-1">
@@ -1002,7 +1220,7 @@ const FeelMatchaDashboard = () => {
             </Card>
             <Card className="bg-rose-50 border-rose-100">
                  <div className="flex justify-between">
-                     <span className="text-sm font-medium text-rose-800">Underperforming</span>
+                     <span className="text-sm font-medium text-rose-800">Relocation Targets</span>
                      <ArrowDownRight className="w-4 h-4 text-rose-500" />
                  </div>
                  <div className="text-2xl font-bold text-rose-700 mt-2">5</div>
@@ -1067,24 +1285,18 @@ const FeelMatchaDashboard = () => {
                             </Scatter>
                         </ScatterChart>
                     </ResponsiveContainer>
-                </div>
-                {/* Legend Below Chart - Replaces Absolute Labels */}
-                <div className="grid grid-cols-2 gap-2 mt-4 text-xs">
-                    <div className="p-2 bg-rose-50 border border-rose-100 rounded text-center">
-                        <span className="block font-bold text-rose-700">High Rent / Low Rev</span>
-                        <div className="w-2 h-2 rounded-full bg-rose-500 mx-auto mt-1"></div>
+                    {/* Quadrant Labels - Updated to prevent stacking */}
+                    <div className="absolute top-4 left-16 text-rose-700 font-bold text-[10px] sm:text-xs bg-white/90 p-1 border border-rose-200 rounded shadow-sm whitespace-nowrap">
+                        High Rent / Low Rev
                     </div>
-                    <div className="p-2 bg-blue-50 border border-blue-100 rounded text-center">
-                        <span className="block font-bold text-blue-700">High Rent / High Rev</span>
-                        <div className="w-2 h-2 rounded-full bg-blue-500 mx-auto mt-1"></div>
+                    <div className="absolute top-4 right-4 text-blue-700 font-bold text-[10px] sm:text-xs bg-white/90 p-1 border border-blue-200 rounded shadow-sm whitespace-nowrap">
+                        High Rent / High Rev
                     </div>
-                    <div className="p-2 bg-amber-50 border border-amber-100 rounded text-center">
-                        <span className="block font-bold text-amber-700">Low Rent / Low Rev</span>
-                        <div className="w-2 h-2 rounded-full bg-amber-500 mx-auto mt-1"></div>
+                    <div className="absolute bottom-12 left-16 text-amber-700 font-bold text-[10px] sm:text-xs bg-white/90 p-1 border border-amber-200 rounded shadow-sm whitespace-nowrap">
+                        Low Rent / Low Rev
                     </div>
-                    <div className="p-2 bg-emerald-50 border border-emerald-100 rounded text-center">
-                        <span className="block font-bold text-emerald-700">Low Rent / High Rev</span>
-                        <div className="w-2 h-2 rounded-full bg-emerald-500 mx-auto mt-1"></div>
+                    <div className="absolute bottom-12 right-4 text-emerald-700 font-bold text-[10px] sm:text-xs bg-white/90 p-1 border border-emerald-200 rounded shadow-sm whitespace-nowrap">
+                        Low Rent / High Rev
                     </div>
                 </div>
              </Card>
