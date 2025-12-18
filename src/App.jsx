@@ -12,7 +12,7 @@ import {
 
 // --- MOCK DATA GENERATION ---
 
-// 1. Executive Pulse Data (Financial Focus)
+// 1. Executive Pulse Data
 const kpiData = [
   { title: 'Net Sales (Live)', value: 'Rp 42.5M', unit: 'Today', trend: '+8.4%', status: 'good', icon: Wallet },
   { title: 'Gross Profit', value: 'Rp 24.1M', unit: '56.7% Margin', trend: '+2.1%', status: 'good', icon: DollarSign },
@@ -20,7 +20,7 @@ const kpiData = [
   { title: 'Labor Cost %', value: '28.1%', unit: 'Target <25%', trend: '+3.1%', status: 'warning', icon: Users },
 ];
 
-// 2. Forecast Data (Demand Planning)
+// 2. Forecast Data
 const forecastData = [
   { day: 'Mon', actual: 1200, forecast: 1250, lower: 1100, upper: 1400, event: '' },
   { day: 'Tue', actual: 1350, forecast: 1300, lower: 1150, upper: 1450, event: '' },
@@ -41,7 +41,7 @@ const channelSplitData = [
   { name: 'Sun', DineIn: 850, Delivery: 1050, CloudKitchen: 350 },
 ];
 
-// 3. Inventory & Waste Data (Real-time Tracking)
+// 3. Inventory & Waste Data
 const wasteDetailedData = [
   { id: 1, name: 'Matcha Croissant', category: 'Pastry', produced: 150, sold: 138, wasted: 12, sellThrough: 92.0 },
   { id: 2, name: 'Hojicha Puff', category: 'Pastry', produced: 100, sold: 95, wasted: 5, sellThrough: 95.0 },
@@ -56,14 +56,14 @@ const wasteChartData = wasteDetailedData.map(item => ({
   wasted: item.wasted
 }));
 
-// Helper to determine status based on business rules (Data Indicator Only)
+// Helper to determine status
 const getSellThroughStatus = (pct) => {
   if (pct >= 90) return 'High Efficiency';
   if (pct >= 75) return 'Moderate';
-  return 'Low Efficiency'; // Neutral naming
+  return 'Low Efficiency';
 };
 
-// 4. Menu Engineering Data (Pareto & PMix)
+// 4. Menu Engineering Data
 const menuMatrixData = [
   { name: 'Signature Matcha Latte', x: 95, y: 80, z: 500, category: 'Star' }, 
   { name: 'Matcha Ice Cream', x: 90, y: 40, z: 450, category: 'Plowhorse' }, 
@@ -86,17 +86,11 @@ const paretoData = [
   { name: 'Sakura Tea', revenue: 4000000, cumulativePercentage: 100 },
 ];
 
-// 5. Operations Data (Workforce Intelligence: SPMH)
-const spmhData = [
-  { hour: '10:00', spmh: 150000, laborCost: 35, target: 200000 },
-  { hour: '11:00', spmh: 180000, laborCost: 30, target: 200000 },
-  { hour: '12:00', spmh: 350000, laborCost: 15, target: 200000 }, // High efficiency
-  { hour: '13:00', spmh: 300000, laborCost: 18, target: 200000 },
-  { hour: '14:00', spmh: 120000, laborCost: 40, target: 200000 }, // Low efficiency
-  { hour: '15:00', spmh: 140000, laborCost: 35, target: 200000 },
-  { hour: '16:00', spmh: 200000, laborCost: 25, target: 200000 },
-  { hour: '17:00', spmh: 250000, laborCost: 20, target: 200000 },
-  { hour: '18:00', spmh: 380000, laborCost: 12, target: 200000 },
+// 5. Operations Data
+const techImpactData = [
+  { metric: 'SPMH (Sales/Man-Hour)', manual: 150000, machine: 225000, improvement: '50% Higher Efficiency' },
+  { metric: 'Error Rate (%)', manual: 4.5, machine: 0.8, improvement: '82% Less Errors' },
+  { metric: 'Staff Training (Days)', manual: 14, machine: 3, improvement: 'Faster Onboarding' },
 ];
 
 const errorSourceData = [
@@ -106,16 +100,28 @@ const errorSourceData = [
   { source: 'Machine Calibration', count: 2 }, 
 ];
 
+const spmhData = [
+  { hour: '10:00', spmh: 150000, laborCost: 35, target: 200000 },
+  { hour: '11:00', spmh: 180000, laborCost: 30, target: 200000 },
+  { hour: '12:00', spmh: 350000, laborCost: 15, target: 200000 }, 
+  { hour: '13:00', spmh: 300000, laborCost: 18, target: 200000 },
+  { hour: '14:00', spmh: 120000, laborCost: 40, target: 200000 }, 
+  { hour: '15:00', spmh: 140000, laborCost: 35, target: 200000 },
+  { hour: '16:00', spmh: 200000, laborCost: 25, target: 200000 },
+  { hour: '17:00', spmh: 250000, laborCost: 20, target: 200000 },
+  { hour: '18:00', spmh: 380000, laborCost: 12, target: 200000 },
+];
+
 const hourlyTrafficData = [
   { time: '10:00', Kemang: 45, PIK: 30, Bintaro: 25 },
   { time: '11:00', Kemang: 60, PIK: 45, Bintaro: 35 },
-  { time: '12:00', Kemang: 120, PIK: 90, Bintaro: 80 }, // Lunch Peak
+  { time: '12:00', Kemang: 120, PIK: 90, Bintaro: 80 },
   { time: '13:00', Kemang: 100, PIK: 85, Bintaro: 70 },
   { time: '14:00', Kemang: 50, PIK: 40, Bintaro: 30 },
   { time: '15:00', Kemang: 55, PIK: 45, Bintaro: 35 },
   { time: '16:00', Kemang: 70, PIK: 60, Bintaro: 50 },
   { time: '17:00', Kemang: 90, PIK: 80, Bintaro: 60 },
-  { time: '18:00', Kemang: 110, PIK: 120, Bintaro: 90 }, // Dinner/After work Peak
+  { time: '18:00', Kemang: 110, PIK: 120, Bintaro: 90 },
   { time: '19:00', Kemang: 95, PIK: 110, Bintaro: 85 },
   { time: '20:00', Kemang: 70, PIK: 80, Bintaro: 60 },
   { time: '21:00', Kemang: 40, PIK: 50, Bintaro: 30 },
@@ -154,6 +160,13 @@ const customerSegments = [
     { type: 'At Risk', count: 150, spend: 'Rp 200rb/mo', visit: '<1x/mo' },
 ];
 
+// Comparison of Spend: Smart Order vs Manual
+const spendComparisonData = [
+    { category: 'Beverage', SmartOrder: 45000, Manual: 38000 },
+    { category: 'Food/Pastry', SmartOrder: 35000, Manual: 28000 },
+    { category: 'Add-ons', SmartOrder: 12000, Manual: 5000 },
+];
+
 // 9. R&D Feedback Data
 const rdMenus = [
     { id: 1, name: 'Matcha Rose Latte (Oct Test)' },
@@ -170,7 +183,7 @@ const rdStats = {
         attributes: [
             { subject: 'Sweetness', A: 85, fullMark: 100 },
             { subject: 'Aroma', A: 90, fullMark: 100 },
-            { subject: 'Texture', A: 60, fullMark: 100 }, // Issue here
+            { subject: 'Texture', A: 60, fullMark: 100 }, 
             { subject: 'Appearance', A: 95, fullMark: 100 },
             { subject: 'Price', A: 70, fullMark: 100 },
         ],
@@ -207,7 +220,7 @@ const rdStats = {
         attributes: [
             { subject: 'Sweetness', A: 60, fullMark: 100 },
             { subject: 'Aroma', A: 70, fullMark: 100 },
-            { subject: 'Texture', A: 50, fullMark: 100 }, // Melts too fast?
+            { subject: 'Texture', A: 50, fullMark: 100 },
             { subject: 'Appearance', A: 80, fullMark: 100 },
             { subject: 'Price', A: 60, fullMark: 100 },
         ],
@@ -297,7 +310,7 @@ const FeelMatchaDashboard = () => {
     { id: 'inventory', label: 'Inventory & Par', icon: ChefHat },
     { id: 'waste', label: 'Waste Control', icon: Trash2 },
     { id: 'menu', label: 'Menu Engineering', icon: Utensils },
-    { id: 'rd', label: 'R&D Feedback Lab', icon: FlaskConical }, // NEW TAB
+    { id: 'rd', label: 'R&D Feedback Lab', icon: FlaskConical }, // Added RD
     { id: 'assets', label: 'Store Portfolio', icon: Building },
     { id: 'ops', label: 'Workforce Intel', icon: Cpu },
   ];
@@ -332,7 +345,7 @@ const FeelMatchaDashboard = () => {
         </div>
       </div>
 
-      {/* KPI Row (Updated for Financial Pulse) */}
+      {/* KPI Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {kpiData.map((kpi, idx) => {
             const Icon = kpi.icon;
@@ -492,19 +505,43 @@ const FeelMatchaDashboard = () => {
                 </div>
              </Card>
         </div>
+        
+        {/* Spend Comparison Chart */}
+             <Card>
+                <div className="flex justify-between items-center mb-4">
+                     <h3 className="font-bold text-slate-900">Spend Analysis: Smart Order vs Manual</h3>
+                     <Badge status="good" text="Smart Order Higher" />
+                </div>
+                <div className="h-64 w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={spendComparisonData} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                            <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+                            <XAxis type="number" tick={{fill: '#334155'}} />
+                            <YAxis dataKey="category" type="category" width={100} tick={{fontSize: 12, fill: '#334155'}} />
+                            <Tooltip cursor={{fill: '#f1f5f9'}} contentStyle={{ color: '#1e293b' }} />
+                            <Legend wrapperStyle={{ color: '#334155' }} />
+                            <Bar dataKey="SmartOrder" fill="#10b981" name="Smart Order (Web)" radius={[0, 4, 4, 0]} />
+                            <Bar dataKey="Manual" fill="#94a3b8" name="Manual (Cashier)" radius={[0, 4, 4, 0]} />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
+                <div className="text-xs text-slate-500 mt-2 text-center">
+                    Smart Order UI drives higher add-on sales (toppings, upsize) through visual prompts.
+                </div>
+             </Card>
     </div>
   );
 
   const RDFeedbackView = ({ dateInfo }) => {
     const [selectedMenu, setSelectedMenu] = useState(rdMenus[0].name);
-    const [feedbackFilter, setFeedbackFilter] = useState('all'); // NEW filter state
+    const [feedbackFilter, setFeedbackFilter] = useState('all'); 
     const data = rdStats[selectedMenu];
 
     const filteredComments = useMemo(() => {
         return data.comments.filter(c => {
             if (feedbackFilter === 'all') return true;
             if (feedbackFilter === 'positive') return c.sentiment === 'positive';
-            if (feedbackFilter === 'negative') return c.sentiment === 'negative'; // Maps to Constructive
+            if (feedbackFilter === 'negative') return c.sentiment === 'negative'; 
             return true;
         });
     }, [data, feedbackFilter]);
@@ -916,7 +953,7 @@ const FeelMatchaDashboard = () => {
                  </div>
                  <div>
                      <p className="text-xs text-emerald-800 font-bold uppercase tracking-wider">High Efficiency</p>
-                     <p className="text-sm font-medium text-slate-700">&ge; 90% Sell-Through</p>
+                     <p className="text-sm font-medium text-slate-800">&ge; 90% Sell-Through</p>
                  </div>
             </div>
             <div className="bg-amber-50 border border-amber-100 p-3 rounded-lg flex items-center gap-3">
